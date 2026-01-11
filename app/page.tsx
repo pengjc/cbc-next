@@ -67,32 +67,32 @@ export default function Home() {
           
           {/* Mobile menu */}
           {mobileMenuOpen && (
-            <nav className="md:hidden mt-4 pb-4 space-y-4">
+            <nav className="md:hidden mt-8 pb-6 space-y-6">
               <a
                 href="#about"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block text-lg hover:text-[#d4af37] transition"
+                className="block text-2xl hover:text-[#d4af37] transition py-2"
               >
                 About
               </a>
               <a
                 href="#schedule"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block text-lg hover:text-[#d4af37] transition"
+                className="block text-2xl hover:text-[#d4af37] transition py-2"
               >
                 Schedule
               </a>
               <a
                 href="#location"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block text-lg hover:text-[#d4af37] transition"
+                className="block text-2xl hover:text-[#d4af37] transition py-2"
               >
                 Location
               </a>
               <a
                 href="#gospel-trip"
                 onClick={() => setMobileMenuOpen(false)}
-                className="block text-lg hover:text-[#d4af37] transition"
+                className="block text-2xl hover:text-[#d4af37] transition py-2"
               >
                 Gospel Trip
               </a>
