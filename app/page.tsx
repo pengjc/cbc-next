@@ -39,6 +39,8 @@ export default function Home() {
               <a href="#schedule" className="hover:text-[#d4af37] transition">Schedule</a>
               <a href="#location" className="hover:text-[#d4af37] transition">Location</a>
               <a href="#gospel-trip" className="hover:text-[#d4af37] transition">Gospel Trip</a>
+              <a href="#child-care" className="hover:text-[#d4af37] transition">Child Care</a>
+              <a href="#register" className="hover:text-[#d4af37] transition">Register</a>
             </nav>
             
             {/* Mobile menu button */}
@@ -95,6 +97,20 @@ export default function Home() {
                 className="block text-2xl hover:text-[#d4af37] transition py-2"
               >
                 Gospel Trip
+              </a>
+              <a
+                href="#child-care"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-2xl hover:text-[#d4af37] transition py-2"
+              >
+                Child Care
+              </a>
+              <a
+                href="#register"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-2xl hover:text-[#d4af37] transition py-2"
+              >
+                Register
               </a>
             </nav>
           )}
@@ -328,7 +344,7 @@ export default function Home() {
       </section>
 
       {/* Child Care Section */}
-      <section className="py-16 bg-white">
+      <section id="child-care" className="py-16 bg-white">
         <div className="container mx-auto px-4 max-w-4xl">
           <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center font-serif">Child Care</h2>
           <div className="bg-gray-50 p-8 rounded-lg">
@@ -379,6 +395,44 @@ export default function Home() {
               If you see any suspicious activity, please contact the hotel front desk or 
               <strong> Brother William Gould: (951) 640-7545</strong>
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Register Section */}
+      <section id="register" className="py-16 bg-white">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center font-serif">Register</h2>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="bg-gray-50 p-8 rounded-lg text-center">
+              <h3 className="text-2xl font-bold text-[#0a375d] mb-4">Conference Registration</h3>
+              <p className="text-gray-700 mb-6">
+                Register for the Carolinas Blending Conference to help us with planning and coordination.
+              </p>
+              <a
+                href="https://forms.gle/iiTvdr2i2frTQi6S6"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-[#0a375d] hover:bg-[#1a5080] text-white px-8 py-3 rounded-lg font-semibold text-lg transition"
+              >
+                Register for Conference
+              </a>
+            </div>
+            
+            <div className="bg-gray-50 p-8 rounded-lg text-center">
+              <h3 className="text-2xl font-bold text-[#0a375d] mb-4">Child Care Registration</h3>
+              <p className="text-gray-700 mb-6">
+                If you need child care during the meetings, please register each child individually.
+              </p>
+              <a
+                href="https://forms.gle/CxSqzJqkYYaZtSqm7"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-[#d4af37] hover:bg-[#c49f2f] text-[#0a375d] px-8 py-3 rounded-lg font-semibold text-lg transition"
+              >
+                Register Child Care
+              </a>
+            </div>
           </div>
         </div>
       </section>
