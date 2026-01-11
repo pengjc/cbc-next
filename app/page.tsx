@@ -1,7 +1,12 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Home() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
@@ -11,27 +16,84 @@ export default function Home() {
             <Image
               src="/cbc-logo-white.svg"
               alt="Carolinas Blending Conference"
-              width={140}
-              height={56}
+              width={100}
+              height={40}
               priority
             />
-            <nav className="hidden md:flex gap-6">
+            <nav className="hidden md:flex gap-8 text-lg">
               <a href="#about" className="hover:text-[#d4af37] transition">About</a>
               <a href="#schedule" className="hover:text-[#d4af37] transition">Schedule</a>
               <a href="#location" className="hover:text-[#d4af37] transition">Location</a>
               <a href="#gospel-trip" className="hover:text-[#d4af37] transition">Gospel Trip</a>
             </nav>
+            
+            {/* Mobile menu button */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden p-2 hover:bg-[#1a5080] rounded transition"
+              aria-label="Toggle menu"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                {mobileMenuOpen ? (
+                  <path d="M6 18L18 6M6 6l12 12" />
+                ) : (
+                  <path d="M4 6h16M4 12h16M4 18h16" />
+                )}
+              </svg>
+            </button>
           </div>
+          
+          {/* Mobile menu */}
+          {mobileMenuOpen && (
+            <nav className="md:hidden mt-4 pb-4 space-y-4">
+              <a
+                href="#about"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-lg hover:text-[#d4af37] transition"
+              >
+                About
+              </a>
+              <a
+                href="#schedule"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-lg hover:text-[#d4af37] transition"
+              >
+                Schedule
+              </a>
+              <a
+                href="#location"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-lg hover:text-[#d4af37] transition"
+              >
+                Location
+              </a>
+              <a
+                href="#gospel-trip"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-lg hover:text-[#d4af37] transition"
+              >
+                Gospel Trip
+              </a>
+            </nav>
+          )}
         </div>
       </header>
 
       {/* Hero Banner */}
       <section className="bg-gradient-to-r from-[#0a375d] to-[#1a5080] text-white py-20">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 font-serif">
             Carolinas Blending Conference
           </h1>
-          <p className="text-2xl md:text-3xl mb-4">
+          <p className="text-2xl md:text-3xl mb-4 font-serif">
             Proclaiming the Gospel, Christ as the Jubilee of Grace
           </p>
           <p className="text-xl mb-8">
@@ -61,7 +123,7 @@ export default function Home() {
       {/* About Section */}
       <section id="about" className="py-16 bg-white">
         <div className="container mx-auto px-4 max-w-4xl">
-          <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center">About the Conference</h2>
+          <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center font-serif">About the Conference</h2>
           <div className="prose prose-lg max-w-none">
             <p className="text-gray-700 leading-relaxed mb-6">
               We are pleased to announce a Carolinas Blending Conference that will begin Saturday morning 
@@ -93,7 +155,7 @@ export default function Home() {
       {/* Schedule Section */}
       <section id="schedule" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4 max-w-5xl">
-          <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center">Schedule</h2>
+          <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center font-serif">Schedule</h2>
           <div className="overflow-x-auto">
             <table className="w-full bg-white shadow-lg rounded-lg overflow-hidden">
               <thead className="bg-[#0a375d] text-white">
@@ -143,7 +205,7 @@ export default function Home() {
       {/* Hotel & Location Section */}
       <section id="location" className="py-16 bg-white">
         <div className="container mx-auto px-4 max-w-4xl">
-          <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center">Hotel & Location</h2>
+          <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center font-serif">Hotel & Location</h2>
           <div className="bg-gradient-to-r from-[#0a375d] to-[#1a5080] text-white p-8 rounded-lg mb-8">
             <h3 className="text-2xl font-bold mb-4">Embassy Suites Charleston</h3>
             <p className="text-lg mb-2">Room Rate: <strong>$153</strong> per night plus taxes</p>
@@ -191,7 +253,7 @@ export default function Home() {
       {/* Gospel Trip Section */}
       <section id="gospel-trip" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4 max-w-4xl">
-          <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center">
+          <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center font-serif">
             Truth Sets Us Free Gospel Distribution
           </h2>
           
@@ -254,7 +316,7 @@ export default function Home() {
       {/* Child Care Section */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 max-w-4xl">
-          <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center">Child Care</h2>
+          <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center font-serif">Child Care</h2>
           <div className="bg-gray-50 p-8 rounded-lg">
             <p className="text-gray-700 mb-4">
               Child care will be provided for the three conference meetings for children in 
@@ -317,7 +379,7 @@ export default function Home() {
             height={60}
             className="mx-auto mb-6"
           />
-          <h3 className="text-2xl font-bold mb-4">Carolinas Blending Conference 2026</h3>
+          <h3 className="text-2xl font-bold mb-4 font-serif">Carolinas Blending Conference 2026</h3>
           <p className="text-lg mb-2">January 17-18, 2026</p>
           <p className="mb-6">Charleston, South Carolina</p>
           <div className="flex gap-6 justify-center flex-wrap">
