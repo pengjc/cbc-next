@@ -3,8 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import allAnnouncements from "@/content/announcements-compiled.json";
 
 export default function Home() {
+  const topAnnouncements = allAnnouncements.slice(0, 3);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
 
@@ -35,11 +37,10 @@ export default function Home() {
               priority
             />
             <nav className="hidden md:flex gap-8 text-lg">
+              <a href="#announcements" className="hover:text-[#d4af37] transition">Announcements</a>
               <a href="#about" className="hover:text-[#d4af37] transition">About</a>
               <a href="#schedule" className="hover:text-[#d4af37] transition">Schedule</a>
-              <a href="#location" className="hover:text-[#d4af37] transition">Location</a>
-              <a href="#gospel-trip" className="hover:text-[#d4af37] transition">Gospel Trip</a>
-              <a href="#child-care" className="hover:text-[#d4af37] transition">Child Care</a>
+              <a href="#location" className="hover:text-[#d4af37] transition">Hotel & Location</a>
               <a href="#register" className="hover:text-[#d4af37] transition">Register</a>
             </nav>
             
@@ -71,6 +72,13 @@ export default function Home() {
           {mobileMenuOpen && (
             <nav className="md:hidden mt-8 pb-6 space-y-6">
               <a
+                href="#announcements"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block text-2xl hover:text-[#d4af37] transition py-2"
+              >
+                Announcements
+              </a>
+              <a
                 href="#about"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block text-2xl hover:text-[#d4af37] transition py-2"
@@ -89,21 +97,7 @@ export default function Home() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="block text-2xl hover:text-[#d4af37] transition py-2"
               >
-                Location
-              </a>
-              <a
-                href="#gospel-trip"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-2xl hover:text-[#d4af37] transition py-2"
-              >
-                Gospel Trip
-              </a>
-              <a
-                href="#child-care"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-2xl hover:text-[#d4af37] transition py-2"
-              >
-                Child Care
+                Hotel & Location
               </a>
               <a
                 href="#register"
@@ -149,6 +143,57 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Announcements Section */}
+      {topAnnouncements.length > 0 && (
+        <section id="announcements" className="py-12 bg-gray-50">
+          <div className="container mx-auto px-4 max-w-4xl">
+            <div className="flex justify-between items-center mb-8">
+              <h2 className="text-3xl font-bold text-[#0a375d] font-serif">Latest Announcements</h2>
+              <Link 
+                href="/announcements"
+                className="text-[#0a375d] hover:text-[#d4af37] font-semibold transition"
+              >
+                View All →
+              </Link>
+            </div>
+            <div className="space-y-4">
+              {topAnnouncements.map((announcement) => {
+                const typeColors = {
+                  important: "border-l-[#d4af37] bg-[#fffef7]",
+                  update: "border-l-[#0a375d] bg-[#f0f4f8]",
+                  info: "border-l-[#0a375d] bg-[#f0f4f8]"
+                };
+                const typeColor = typeColors[announcement.type as keyof typeof typeColors] || "border-l-gray-500 bg-white";
+                
+                return (
+                  <div
+                    key={announcement.id}
+                    className={`border-l-4 ${typeColor} p-6 rounded-r-lg shadow-sm`}
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className="text-xl font-semibold text-[#0a375d] font-serif">
+                        {announcement.title}
+                      </h3>
+                      <span className="text-sm text-gray-600 whitespace-nowrap ml-4">
+                        {new Date(announcement.date).toLocaleDateString('en-US', {
+                          month: 'long',
+                          day: 'numeric',
+                          year: 'numeric'
+                        })}
+                      </span>
+                    </div>
+                    <div 
+                      className="announcement-content text-gray-700 leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: announcement.content }}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* About Section */}
       <section id="about" className="py-16 bg-white">
@@ -203,7 +248,7 @@ export default function Home() {
                 </tr>
                 <tr className="hover:bg-gray-50">
                   <td className="px-6 py-4 text-gray-900"></td>
-                  <td className="px-6 py-4 text-gray-900">FTTA trainees, YP, and college student meeting</td>
+                  <td className="px-6 py-4 text-gray-900">FTTA trainees and YP and college student meeting</td>
                   <td className="px-6 py-4 text-gray-900">5:00 - 6:00 PM</td>
                 </tr>
                 <tr className="hover:bg-gray-50">
@@ -219,7 +264,7 @@ export default function Home() {
                 <tr className="hover:bg-gray-50">
                   <td className="px-6 py-4 text-gray-900"></td>
                   <td className="px-6 py-4 text-gray-900">MLK Parade Truth Sets Us Free Coordination</td>
-                  <td className="px-6 py-4 text-gray-900">4:00 - 6:00 PM</td>
+                  <td className="px-6 py-4 text-gray-900">TBD</td>
                 </tr>
                 <tr className="hover:bg-gray-50">
                   <td className="px-6 py-4 font-semibold text-gray-900">Monday 1/19</td>

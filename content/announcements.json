@@ -1,0 +1,23 @@
+[
+  {
+    "id": 3,
+    "date": "2026-01-11",
+    "title": "Schedule Update",
+    "message": "The MLK Parade Truth Sets Us Free coordination meeting time is now TBD. Please check back for updates.",
+    "type": "update"
+  },
+  {
+    "id": 2,
+    "date": "2026-01-10",
+    "title": "Hotel Room Block Extended",
+    "message": "Good news! The cutoff date for booking hotel rooms has been extended to December 30th, 2025. Room rate is $153 per night plus taxes.",
+    "type": "info"
+  },
+  {
+    "id": 1,
+    "date": "2026-01-05",
+    "title": "Registration Now Open",
+    "message": "Conference registration is now open! Please register as soon as possible to help us with planning. Child care registration is also available.",
+    "type": "important"
+  }
+]
