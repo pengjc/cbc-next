@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# AWS temporary files
+/tmp/
+
+# Editor directories
+.vscode/
+.idea/
