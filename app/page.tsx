@@ -9,6 +9,7 @@ export default function Home() {
   const topAnnouncements = allAnnouncements.slice(0, 3);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const whatsappCommunityUrl = "https://chat.whatsapp.com/your-invite-link";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -111,6 +112,35 @@ export default function Home() {
         </div>
       </header>
 
+      {/* WhatsApp Community CTA */}
+      <section className="py-10 bg-gray-50">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <div className="bg-white border-2 border-[#0a375d] rounded-lg p-6 md:p-8 shadow-lg">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+              <div>
+                <p className="text-sm font-semibold uppercase tracking-wide text-[#0a375d]">
+                  Conference Announcements and Communications
+                </p>
+                <h2 className="text-2xl md:text-3xl font-bold font-serif text-[#0a375d] mt-2">
+                  Join the Conference WhatsApp Community
+                </h2>
+                <p className="text-gray-700 mt-2">
+                  Get real-time updates, announcements, and coordinate with other saints during the gospel trip by joining the 2026 Carolinas Blending Conference WhatsApp group.
+                </p>
+              </div>
+              <Link
+                href={whatsappCommunityUrl}
+                className="inline-flex items-center justify-center bg-[#d4af37] hover:bg-[#c49f2f] text-[#0a375d] px-8 py-3 rounded-lg font-semibold text-lg transition"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Join WhatsApp Community
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Hero Banner */}
       <section className="bg-gradient-to-r from-[#0a375d] to-[#1a5080] text-white py-20">
         <div className="container mx-auto px-4 text-center">
@@ -202,7 +232,7 @@ export default function Home() {
           <div className="prose prose-lg max-w-none">
             <p className="text-gray-700 leading-relaxed mb-6">
               We are pleased to announce a Carolinas Blending Conference that will begin Saturday morning 
-              January 17th, 2026 and concludes Lord's Day afternoon on January 18th in Charleston, South Carolina, 
+              January 17th, 2026 and concludes Lord&apos;s Day afternoon on January 18th in Charleston, South Carolina, 
               which has been designated as a GTCA target city for 2026.
             </p>
             <p className="text-gray-700 leading-relaxed mb-6">
@@ -213,7 +243,7 @@ export default function Home() {
               Bibles and books in Charleston that day on January 19th and concluding Tuesday January 20th. The Carolinas 
               Blending Conference combined with the BfA distribution afterwards constitutes the inaugural event of 
               <strong> The Truth Sets US Free</strong>, which includes a series of gospel events in 2026 as part of a broader 
-              burden to spread the truths of the Lord's recovery in the United States.
+              burden to spread the truths of the Lord&apos;s recovery in the United States.
             </p>
             <div className="bg-[#0a375d] text-white p-6 rounded-lg">
               <p className="mb-2">
