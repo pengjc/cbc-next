@@ -140,7 +140,7 @@ export default function Home() {
                   alt="WhatsApp"
                   width={160}
                   height={38}
-                  className="h-8 w-auto scale-125"
+                  className="h-8 w-auto scale-100 md:scale-125 md:shrink-0 md:max-w-none"
                 />
               </Link>
             </div>
