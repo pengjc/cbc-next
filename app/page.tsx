@@ -9,7 +9,7 @@ export default function Home() {
   const topAnnouncements = allAnnouncements.slice(0, 3);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
-  const whatsappCommunityUrl = "https://chat.whatsapp.com/your-invite-link";
+  const whatsappCommunityUrl = "https://chat.whatsapp.com/JRlV7XFUpNI3vC0DGhkO4i";
 
   useEffect(() => {
     const handleScroll = () => {
@@ -130,11 +130,18 @@ export default function Home() {
               </div>
               <Link
                 href={whatsappCommunityUrl}
-                className="inline-flex items-center justify-center bg-[#d4af37] hover:bg-[#c49f2f] text-[#0a375d] px-8 py-3 rounded-lg font-semibold text-lg transition"
+                className="inline-flex items-center justify-center bg-[#25D366] hover:bg-[#1fb85a] text-white px-14 py-3 rounded-lg font-semibold text-lg transition"
                 target="_blank"
                 rel="noreferrer"
+                aria-label="Join the CBC WhatsApp Community"
               >
-                Join WhatsApp Community
+                <Image
+                  src="/whatsapp-wordmark-white.svg"
+                  alt="WhatsApp"
+                  width={160}
+                  height={38}
+                  className="h-8 w-auto scale-125"
+                />
               </Link>
             </div>
           </div>
