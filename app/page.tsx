@@ -100,6 +100,13 @@ export default function Home() {
                     >
                       Hotel & Location
                     </a>
+                    <Link
+                      href="/gtca-house"
+                      onClick={() => setOtherMenuOpen(false)}
+                      className="block px-4 py-2 hover:bg-gray-100 hover:text-[#0a375d] transition"
+                    >
+                      GTCA House
+                    </Link>
                     <a
                       href="#register"
                       onClick={() => setOtherMenuOpen(false)}
@@ -217,6 +224,16 @@ export default function Home() {
                     >
                       Hotel & Location
                     </a>
+                    <Link
+                      href="/gtca-house"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        setMobileOtherMenuOpen(false);
+                      }}
+                      className="block text-xl hover:text-[#d4af37] transition py-2"
+                    >
+                      GTCA House
+                    </Link>
                     <a
                       href="#register"
                       onClick={() => {
