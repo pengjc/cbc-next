@@ -21,6 +21,10 @@ const merriweather = Merriweather({
 export const metadata: Metadata = {
   title: "Carolinas Blending Conference 2026 | Charleston, SC",
   description: "Join us for the Carolinas Blending Conference January 17-18, 2026 in Charleston, SC. General subject: Proclaiming the Gospel, Christ as the Jubilee of Grace.",
+  icons: {
+    icon: '/cbc-logo.svg',
+    apple: '/cbc-logo.svg',
+  },
 };
 
 export default function RootLayout({
