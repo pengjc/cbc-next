@@ -1,5 +1,5 @@
 import Link from "next/link";
-import announcements from "@/content/announcements-compiled.json";
+import allAnnouncements from "@/content/announcements-compiled.json";
 
 export default function AnnouncementsPage() {
 
@@ -26,13 +26,13 @@ export default function AnnouncementsPage() {
       {/* Announcements List */}
       <section className="py-12">
         <div className="container mx-auto px-4 max-w-4xl">
-          {announcements.length === 0 ? (
+          {allAnnouncements.length === 0 ? (
             <div className="text-center text-gray-600 py-12">
               <p className="text-xl">No announcements at this time.</p>
             </div>
           ) : (
             <div className="space-y-6">
-              {announcements.map((announcement) => {
+              {allAnnouncements.map((announcement) => {
                 const typeColors = {
                   important: "border-l-[#d4af37] bg-[#fffef7]",
                   update: "border-l-[#0a375d] bg-[#f0f4f8]",
