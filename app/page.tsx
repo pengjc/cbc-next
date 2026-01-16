@@ -725,8 +725,54 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Visit Charleston Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center font-serif">
+            Visiting Charleston
+          </h2>
+          <p className="text-center text-gray-700 text-lg mb-12">
+            Information for visiting Charleston and planning a future visit
+          </p>
+          
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Visit Charleston Card */}
+            <Link href="/visit-charleston" className="group">
+              <div className="bg-gradient-to-br from-[#f0f4f8] to-white border-2 border-[#0a375d] rounded-lg p-8 h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <div className="text-4xl mb-4">🏛️</div>
+                <h3 className="text-2xl font-bold text-[#0a375d] mb-4 group-hover:text-[#d4af37] transition">
+                  Discover Charleston
+                </h3>
+                <p className="text-gray-700 mb-4">
+                  Explore Charleston&apos;s rich history, vibrant food scene, and beautiful destinations. From BBQ to beaches, museums to waterfront parks—find your next adventure.
+                </p>
+                <span className="text-[#0a375d] font-semibold group-hover:text-[#d4af37] transition">
+                  Learn More →
+                </span>
+              </div>
+            </Link>
+
+            {/* GTCA House Card */}
+            <Link href="/gtca-house" className="group">
+              <div className="bg-gradient-to-br from-[#fffef7] to-white border-2 border-[#d4af37] rounded-lg p-8 h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                <div className="text-4xl mb-4">🏡</div>
+                <h3 className="text-2xl font-bold text-[#0a375d] mb-4 group-hover:text-[#d4af37] transition">
+                  GTCA House
+                </h3>
+                <p className="text-gray-700 mb-4">
+                  A fully-furnished 3-bedroom house available for saints visiting Charleston. Sleeps up to 10 individuals with a suggested donation of $75/night per family.
+                </p>
+                <span className="text-[#0a375d] font-semibold group-hover:text-[#d4af37] transition">
+                  Book a Visit →
+                </span>
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Register Section */}
-      <section id="register" className="py-16 bg-white">
+      <section id="register" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4 max-w-4xl">
           <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center font-serif">
             Register
