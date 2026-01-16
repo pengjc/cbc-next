@@ -9,6 +9,8 @@ export default function Home() {
   const topAnnouncements = allAnnouncements.slice(0, 3);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const [otherMenuOpen, setOtherMenuOpen] = useState(false);
+  const [mobileOtherMenuOpen, setMobileOtherMenuOpen] = useState(false);
   const whatsappCommunityUrl = "https://chat.whatsapp.com/JRlV7XFUpNI3vC0DGhkO4i";
 
   useEffect(() => {
@@ -37,12 +39,57 @@ export default function Home() {
               height={40}
               priority
             />
-            <nav className="hidden md:flex gap-8 text-lg">
+            <nav className="hidden md:flex gap-8 text-lg items-center">
               <a href="#announcements" className="hover:text-[#d4af37] transition">Announcements</a>
-              <a href="#about" className="hover:text-[#d4af37] transition">About</a>
               <a href="#schedule" className="hover:text-[#d4af37] transition">Schedule</a>
-              <a href="#location" className="hover:text-[#d4af37] transition">Hotel & Location</a>
-              <a href="#register" className="hover:text-[#d4af37] transition">Register</a>
+              <a href="#child-care" className="hover:text-[#d4af37] transition">Child Care</a>
+              <a href="#gospel-trip" className="hover:text-[#d4af37] transition">Gospel Trip</a>
+              <div className="relative">
+                <button
+                  onClick={() => setOtherMenuOpen(!otherMenuOpen)}
+                  onBlur={() => setTimeout(() => setOtherMenuOpen(false), 200)}
+                  className="flex items-center gap-1 hover:text-[#d4af37] transition"
+                  aria-label="Other menu items"
+                >
+                  Other
+                  <svg
+                    className={`w-4 h-4 transition-transform duration-200 ${otherMenuOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {otherMenuOpen && (
+                  <div className="absolute top-full right-0 mt-2 bg-white text-[#0a375d] rounded-lg shadow-xl border border-gray-200 py-2 min-w-[200px] z-50">
+                    <a 
+                      href="#about" 
+                      onClick={() => setOtherMenuOpen(false)}
+                      className="block px-4 py-2 hover:bg-gray-100 hover:text-[#0a375d] transition"
+                    >
+                      About
+                    </a>
+                    <a 
+                      href="#location" 
+                      onClick={() => setOtherMenuOpen(false)}
+                      className="block px-4 py-2 hover:bg-gray-100 hover:text-[#0a375d] transition"
+                    >
+                      Hotel & Location
+                    </a>
+                    <a 
+                      href="#register" 
+                      onClick={() => setOtherMenuOpen(false)}
+                      className="block px-4 py-2 hover:bg-gray-100 hover:text-[#0a375d] transition"
+                    >
+                      Register
+                    </a>
+                  </div>
+                )}
+              </div>
             </nav>
             
             {/* Mobile menu button */}
@@ -80,13 +127,6 @@ export default function Home() {
                 Announcements
               </a>
               <a
-                href="#about"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-2xl hover:text-[#d4af37] transition py-2"
-              >
-                About
-              </a>
-              <a
                 href="#schedule"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block text-2xl hover:text-[#d4af37] transition py-2"
@@ -94,19 +134,64 @@ export default function Home() {
                 Schedule
               </a>
               <a
-                href="#location"
+                href="#child-care"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block text-2xl hover:text-[#d4af37] transition py-2"
               >
-                Hotel & Location
+                Child Care
               </a>
               <a
-                href="#register"
+                href="#gospel-trip"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block text-2xl hover:text-[#d4af37] transition py-2"
               >
-                Register
+                Gospel Trip
               </a>
+              <div>
+                <button
+                  onClick={() => setMobileOtherMenuOpen(!mobileOtherMenuOpen)}
+                  className="flex items-center gap-2 text-2xl hover:text-[#d4af37] transition py-2 w-full"
+                  aria-label="Toggle other menu items"
+                >
+                  Other
+                  <svg
+                    className={`w-6 h-6 transition-transform duration-200 ${mobileOtherMenuOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+                {mobileOtherMenuOpen && (
+                  <div className="ml-6 mt-4 space-y-4 pl-4 border-l-2 border-[#d4af37]">
+                    <a
+                      href="#about"
+                      onClick={() => { setMobileMenuOpen(false); setMobileOtherMenuOpen(false); }}
+                      className="block text-xl hover:text-[#d4af37] transition py-2"
+                    >
+                      About
+                    </a>
+                    <a
+                      href="#location"
+                      onClick={() => { setMobileMenuOpen(false); setMobileOtherMenuOpen(false); }}
+                      className="block text-xl hover:text-[#d4af37] transition py-2"
+                    >
+                      Hotel & Location
+                    </a>
+                    <a
+                      href="#register"
+                      onClick={() => { setMobileMenuOpen(false); setMobileOtherMenuOpen(false); }}
+                      className="block text-xl hover:text-[#d4af37] transition py-2"
+                    >
+                      Register
+                    </a>
+                  </div>
+                )}
+              </div>
             </nav>
           )}
         </div>
@@ -232,40 +317,8 @@ export default function Home() {
         </section>
       )}
 
-      {/* About Section */}
-      <section id="about" className="py-16 bg-white">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center font-serif">About the Conference</h2>
-          <div className="prose prose-lg max-w-none">
-            <p className="text-gray-700 leading-relaxed mb-6">
-              We are pleased to announce a Carolinas Blending Conference that will begin Saturday morning 
-              January 17th, 2026 and concludes Lord&apos;s Day afternoon on January 18th in Charleston, South Carolina, 
-              which has been designated as a GTCA target city for 2026.
-            </p>
-            <p className="text-gray-700 leading-relaxed mb-6">
-              The general subject of the conference is <strong>Proclaiming the Gospel, Christ as the Jubilee of Grace</strong>.
-            </p>
-            <p className="text-gray-700 leading-relaxed mb-6">
-              The following Monday is the Martin Luther King holiday, and we plan to distribute Bibles for America (BfA) 
-              Bibles and books in Charleston that day on January 19th and concluding Tuesday January 20th. The Carolinas 
-              Blending Conference combined with the BfA distribution afterwards constitutes the inaugural event of 
-              <strong> The Truth Sets US Free</strong>, which includes a series of gospel events in 2026 as part of a broader 
-              burden to spread the truths of the Lord&apos;s recovery in the United States.
-            </p>
-            <div className="bg-[#0a375d] text-white p-6 rounded-lg">
-              <p className="mb-2">
-                <strong>Brother Minoru Chen</strong> will be joining the conference by Zoom
-              </p>
-              <p>
-                <strong>Brother Tony Barba</strong> from BfA will be joining in person
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Schedule Section */}
-      <section id="schedule" className="py-16 bg-gray-50">
+      <section id="schedule" className="py-16 bg-white">
         <div className="container mx-auto px-4 max-w-5xl">
           <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center font-serif">Schedule</h2>
           <div className="overflow-x-auto">
@@ -310,6 +363,140 @@ export default function Home() {
                 </tr>
               </tbody>
             </table>
+          </div>
+        </div>
+      </section>
+
+      {/* Child Care Section */}
+      <section id="child-care" className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center font-serif">Child Care</h2>
+          <div className="bg-white p-8 rounded-lg shadow-lg">
+            <p className="text-gray-700 mb-4">
+              Child care will be provided for the three conference meetings for children in 
+              <strong> kindergarten through 6th grade</strong>.
+            </p>
+            <p className="text-gray-700 mb-6">
+              Children in <strong>middle school and high school</strong> are expected to attend the conference meetings.
+            </p>
+
+            <div className="bg-yellow-50 border-l-4 border-[#d4af37] p-6 mb-6">
+              <h4 className="font-bold text-[#0a375d] mb-2">Sign-In/Out Location:</h4>
+              <p className="text-gray-700">Registration desk by Conference Room C4</p>
+              <p className="text-gray-700 mt-3">
+                <strong>Important:</strong> Do NOT drop off kids more than 15 minutes before meetings. 
+                Pick up kids right after the meeting.
+              </p>
+              <p className="text-gray-700 mt-3">
+                Toddlers will need to be accompanied by at least a parent in room C4. Audio streaming will be provided.
+              </p>
+            </div>
+
+            <div className="text-center">
+              <a
+                href="https://forms.gle/CxSqzJqkYYaZtSqm7"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-[#0a375d] hover:bg-[#1a5080] text-white px-8 py-3 rounded-lg font-semibold text-lg transition"
+              >
+                Register Each Child for Care
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Gospel Trip Section */}
+      <section id="gospel-trip" className="py-16 bg-white">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center font-serif">
+            Truth Sets Us Free Gospel Distribution
+          </h2>
+          
+          <div className="bg-gray-50 p-8 rounded-lg shadow-lg mb-8">
+            <h3 className="text-2xl font-bold text-[#0a375d] mb-4">MLK Parade Distribution</h3>
+            <p className="text-gray-700 mb-6">
+              We will be distributing BFA materials and Bibles on MLK day during the parade. 
+              We will be exercising our first amendment rights of free speech and will have the 
+              saints spread out in small groups.
+            </p>
+
+            <h4 className="text-xl font-bold text-[#0a375d] mb-3">Important Information:</h4>
+            <ul className="space-y-3 text-gray-700 mb-6">
+              <li className="flex items-start">
+                <span className="text-[#d4af37] mr-2">•</span>
+                <span>Attend the Lord&apos;s Day TSUF Coordination Meeting at <strong>4:00 PM</strong> if you want to participate</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-[#d4af37] mr-2">•</span>
+                <span>Form small groups (ideal size: 5 saints per group)</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-[#d4af37] mr-2">•</span>
+                <span>Each team can pick up 50 Bibles, 50 Basic Elements books, and 50 Spiritual Nourishment books</span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-[#d4af37] mr-2">•</span>
+                <span>Check out early Monday and arrive downtown by <strong>9:00 AM</strong></span>
+              </li>
+              <li className="flex items-start">
+                <span className="text-[#d4af37] mr-2">•</span>
+                <span>Distribute materials until 11:00 AM or noon</span>
+              </li>
+            </ul>
+
+            <div className="bg-[#0a375d] text-white p-6 rounded-lg">
+              <p className="mb-2">
+                <strong>Distribution Materials:</strong> T-shirts, vests, hats, and bags are available for pre-order
+              </p>
+              <p className="text-sm">
+                Materials are primarily for saints joining the gospel trip. Leftover materials will be 
+                available for sale after the last conference meeting on Lord&apos;s Day at noon.
+              </p>
+            </div>
+
+            <div className="mt-6 text-center">
+              <a 
+                href="https://tinyurl.com/CharlestonMLKparade" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-[#d4af37] hover:bg-[#c49f2f] text-[#0a375d] px-8 py-3 rounded-lg font-semibold text-lg transition"
+              >
+                View MLK Parade Details
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="py-16 bg-gray-50">
+        <div className="container mx-auto px-4 max-w-4xl">
+          <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center font-serif">About the Conference</h2>
+          <div className="prose prose-lg max-w-none">
+            <p className="text-gray-700 leading-relaxed mb-6">
+              We are pleased to announce a Carolinas Blending Conference that will begin Saturday morning 
+              January 17th, 2026 and concludes Lord&apos;s Day afternoon on January 18th in Charleston, South Carolina, 
+              which has been designated as a GTCA target city for 2026.
+            </p>
+            <p className="text-gray-700 leading-relaxed mb-6">
+              The general subject of the conference is <strong>Proclaiming the Gospel, Christ as the Jubilee of Grace</strong>.
+            </p>
+            <p className="text-gray-700 leading-relaxed mb-6">
+              The following Monday is the Martin Luther King holiday, and we plan to distribute Bibles for America (BfA) 
+              Bibles and books in Charleston that day on January 19th and concluding Tuesday January 20th. The Carolinas 
+              Blending Conference combined with the BfA distribution afterwards constitutes the inaugural event of 
+              <strong> The Truth Sets US Free</strong>, which includes a series of gospel events in 2026 as part of a broader 
+              burden to spread the truths of the Lord&apos;s recovery in the United States.
+            </p>
+            <div className="bg-[#0a375d] text-white p-6 rounded-lg">
+              <p className="mb-2">
+                <strong>Brother Minoru Chen</strong> will be joining the conference by Zoom
+              </p>
+              <p>
+                <strong>Brother Tony Barba</strong> from BfA will be joining in person
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -419,45 +606,6 @@ export default function Home() {
                 className="inline-block bg-[#d4af37] hover:bg-[#c49f2f] text-[#0a375d] px-8 py-3 rounded-lg font-semibold text-lg transition"
               >
                 View MLK Parade Details
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Child Care Section */}
-      <section id="child-care" className="py-16 bg-white">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <h2 className="text-4xl font-bold text-[#0a375d] mb-8 text-center font-serif">Child Care</h2>
-          <div className="bg-gray-50 p-8 rounded-lg">
-            <p className="text-gray-700 mb-4">
-              Child care will be provided for the three conference meetings for children in 
-              <strong> kindergarten through 6th grade</strong>.
-            </p>
-            <p className="text-gray-700 mb-6">
-              Children in <strong>middle school and high school</strong> are expected to attend the conference meetings.
-            </p>
-
-            <div className="bg-yellow-50 border-l-4 border-[#d4af37] p-6 mb-6">
-              <h4 className="font-bold text-[#0a375d] mb-2">Sign-In/Out Location:</h4>
-              <p className="text-gray-700">Registration desk by Conference Room C4</p>
-              <p className="text-gray-700 mt-3">
-                <strong>Important:</strong> Do NOT drop off kids more than 15 minutes before meetings. 
-                Pick up kids right after the meeting.
-              </p>
-              <p className="text-gray-700 mt-3">
-                Toddlers will need to be accompanied by at least a parent in room C4. Audio streaming will be provided.
-              </p>
-            </div>
-
-            <div className="text-center">
-              <a
-                href="https://forms.gle/CxSqzJqkYYaZtSqm7"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block bg-[#0a375d] hover:bg-[#1a5080] text-white px-8 py-3 rounded-lg font-semibold text-lg transition"
-              >
-                Register Each Child for Care
               </a>
             </div>
           </div>
