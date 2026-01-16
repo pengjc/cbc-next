@@ -101,6 +101,13 @@ export default function Home() {
                       Hotel & Location
                     </a>
                     <Link
+                      href="/visit-charleston"
+                      onClick={() => setOtherMenuOpen(false)}
+                      className="block px-4 py-2 hover:bg-gray-100 hover:text-[#0a375d] transition"
+                    >
+                      Visit Charleston
+                    </Link>
+                    <Link
                       href="/gtca-house"
                       onClick={() => setOtherMenuOpen(false)}
                       className="block px-4 py-2 hover:bg-gray-100 hover:text-[#0a375d] transition"
@@ -224,6 +231,16 @@ export default function Home() {
                     >
                       Hotel & Location
                     </a>
+                    <Link
+                      href="/visit-charleston"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        setMobileOtherMenuOpen(false);
+                      }}
+                      className="block text-xl hover:text-[#d4af37] transition py-2"
+                    >
+                      Visit Charleston
+                    </Link>
                     <Link
                       href="/gtca-house"
                       onClick={() => {
