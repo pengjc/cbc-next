@@ -1,5 +1,13 @@
 [
   {
+    "id": 5,
+    "date": "2026-01-16T00:00:00.000Z",
+    "title": "Hotel Reservation Information",
+    "content": "<p><strong>Important:</strong> Request for Hotel Reservation Information</p>\n<p>To avoid potential penalties from the hotel, we would like to request your reservation information for nights outside of the original room block. The hotel will add those reservations to our event to offset any shortfall from our contract. Please help us by giving us the information for any reservations made for the nights of Thursday 1/15, Sunday 1/18, and Monday 1/19. Please fill out a separate form for each separate reservation made.</p>\n<p>Link to form:\n<a href=\"https://forms.gle/wYLmmcPSUNm84WSM6\">https://forms.gle/wYLmmcPSUNm84WSM6</a></p>\n",
+    "type": "important",
+    "slug": "2026-01-16-hotel-reservations"
+  },
+  {
     "id": 3,
     "date": "2026-01-15T00:00:00.000Z",
     "title": "Pre-order of TSUF materials",
@@ -13,7 +21,7 @@
     "title": "Schedule Update",
     "content": "<p>The MLK Parade Truth Sets Us Free coordination meeting time is now Lord&#39;s Day 7:30 PM.</p>\n",
     "type": "update",
-    "slug": "2026-01-16-schedule-update"
+    "slug": "2026-01-13-schedule-update"
   },
   {
     "id": 2,
@@ -21,7 +29,7 @@
     "title": "Hotel Room Commitment",
     "content": "<p><strong>Important:</strong> We have a contracted minimum number of rooms with the hotel. If we don&#39;t fill these rooms, we will face financial penalties.</p>\n<h2>If You Need to Cancel</h2>\n<p>If circumstances change and you cannot attend:</p>\n<ol>\n<li><strong>First</strong>, try to find someone else who can take your room</li>\n<li><strong>If that&#39;s not possible</strong>, email us at <a href=\"mailto:info@carolinasblendingconference.org\">info@carolinasblendingconference.org</a> with your cancellation request</li>\n<li>We will add your room to the waitlist and offer it to others who need accommodation</li>\n</ol>\n<p>Your cooperation helps us avoid penalties. Thank you!</p>\n",
     "type": "important",
-    "slug": "2026-01-09-hotel-room-commitment"
+    "slug": "2026-01-11-hotel-room-commitment"
   },
   {
     "id": 1,
