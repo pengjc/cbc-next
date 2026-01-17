@@ -683,6 +683,48 @@ export default function Home() {
             </p>
           </div>
 
+          <div className="bg-white border-2 border-[#0a375d] p-8 rounded-lg mb-8">
+            <h3 className="text-2xl font-bold text-[#0a375d] mb-4">
+              Conference Location
+            </h3>
+            <p className="text-gray-700 mb-4">
+              <strong>Conference Meetings:</strong> Convention Center Ballroom A
+            </p>
+            <p className="text-gray-700 mb-4">
+              <strong>Child Care Rooms:</strong> C4, C1, C2, and C3
+            </p>
+            
+            <div className="bg-[#f0f4f8] p-6 rounded-lg mb-6">
+              <h4 className="text-xl font-bold text-[#0a375d] mb-3">
+                Getting to the Convention Center
+              </h4>
+              <p className="text-gray-700 mb-3">
+                The convention center is a short walk from the Embassy Suites hotel. There are two convenient routes:
+              </p>
+              <ul className="space-y-2 text-gray-700 ml-4">
+                <li className="flex items-start">
+                  <span className="text-[#d4af37] mr-2">•</span>
+                  <span><strong>Indoor Skywalk:</strong> Take the skywalk from Level 2 of the hotel directly to the convention center</span>
+                </li>
+                <li className="flex items-start">
+                  <span className="text-[#d4af37] mr-2">•</span>
+                  <span><strong>Ground Floor:</strong> Walk outside from the hotel ground floor to the convention center entrance</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="text-center">
+              <a
+                href="https://calea.charlestoncounty.org/files/Conference-Center-Space-Layout-Floor-Plan.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-[#0a375d] hover:bg-[#1a5080] text-white px-8 py-3 rounded-lg font-semibold text-lg transition"
+              >
+                View Convention Center Floor Plan
+              </a>
+            </div>
+          </div>
+
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-gray-50 p-6 rounded-lg">
               <h4 className="text-xl font-bold text-[#0a375d] mb-3">
