@@ -13,7 +13,7 @@ export default function GTCAHousePage() {
             ← Back to Home
           </Link>
           <h1 className="text-4xl md:text-5xl font-bold font-serif">
-            GTCA House
+            Charleston Gospel House
           </h1>
           <p className="text-lg mt-2">
             Visit Charleston, South Carolina
@@ -27,7 +27,7 @@ export default function GTCAHousePage() {
           <div className="bg-white rounded-lg shadow-md p-8 md:p-12">
             <div className="prose prose-lg max-w-none text-gray-900">
               <p className="text-xl font-semibold text-[#0a375d] mb-6">
-                <strong>The GTCA house is now fully furnished and available</strong> to host saints who are interested in visiting Charleston, South Carolina!
+                <strong>The Charleston Gospel House is now fully furnished and available</strong> to host saints who are interested in visiting Charleston, South Carolina!
               </p>
 
               <p className="mb-6 text-gray-900">
@@ -46,7 +46,7 @@ export default function GTCAHousePage() {
               </p>
 
               <p className="mb-6 text-gray-900">
-                For larger groups (e.g., those who are interested in visiting with their small group), the <strong>combined hosting capacity</strong> with the GTCA house and local saints is <strong>4-5 families</strong>.
+                For larger groups (e.g., those who are interested in visiting with their small group), the <strong>combined hosting capacity</strong> with the Charleston Gospel House and local saints is <strong>4-5 families</strong>.
               </p>
 
               <div className="bg-[#fffef7] border-l-4 border-[#d4af37] p-6 mb-6">

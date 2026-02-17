@@ -46,3 +46,6 @@ next-env.d.ts
 # Editor directories
 .vscode/
 .idea/
+
+# Video files
+*.mov

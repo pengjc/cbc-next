@@ -134,14 +134,14 @@ export default function VisitCharlestonPage() {
                 There are currently <strong>~10 saints regularly meeting in Charleston</strong> and <strong>~20 warm door contacts</strong>.
               </p>
               <p>
-                A 3-bed, 2-bath &quot;GTCA House&quot; has been completely furnished and is ready to receive visiting saints! Hosting capacity is up to 10 individuals or 2 family units.
+                A 3-bed, 2-bath &quot;Charleston Gospel House&quot; has been completely furnished and is ready to receive visiting saints! Hosting capacity is up to 10 individuals or 2 family units.
               </p>
               <div className="mt-6 text-center">
                 <Link 
-                  href="/gtca-house"
+                  href="/gospel-house"
                   className="inline-block bg-[#0a375d] text-white px-8 py-3 rounded-lg hover:bg-[#1a5080] transition font-semibold text-lg"
                 >
-                  Learn More About the GTCA House
+                  Learn More About the Charleston Gospel House
                 </Link>
               </div>
             </div>

@@ -41,27 +41,24 @@ export default function Home() {
               priority
             />
             <nav className="hidden md:flex gap-8 text-lg items-center">
-              <a
-                href="#announcements"
+              <Link
+                href="/messages"
                 className="hover:text-[#d4af37] transition"
               >
-                Announcements
-              </a>
-              <a href="#schedule" className="hover:text-[#d4af37] transition">
-                Schedule
-              </a>
-              <a href="#child-care" className="hover:text-[#d4af37] transition">
-                Child Care
-              </a>
-              <a
-                href="#gospel-trip"
+                Messages
+              </Link>
+              <Link
+                href="/gtca-house"
                 className="hover:text-[#d4af37] transition"
               >
-                Gospel Trip
-              </a>
-              <a href="#security" className="hover:text-[#d4af37] transition">
-                Security
-              </a>
+                Charleston Gospel House
+              </Link>
+              <Link
+                href="/visit-charleston"
+                className="hover:text-[#d4af37] transition"
+              >
+                Visit Charleston
+              </Link>
               <div className="relative">
                 <button
                   onClick={() => setOtherMenuOpen(!otherMenuOpen)}
@@ -87,6 +84,48 @@ export default function Home() {
                 {otherMenuOpen && (
                   <div className="absolute top-full right-0 mt-2 bg-white text-[#0a375d] rounded-lg shadow-xl border border-gray-200 py-2 min-w-[200px] z-50">
                     <a
+                      href="#announcements"
+                      onClick={() => setOtherMenuOpen(false)}
+                      className="block px-4 py-2 hover:bg-gray-100 hover:text-[#0a375d] transition"
+                    >
+                      Announcements
+                    </a>
+                    <Link
+                      href="/announcements"
+                      onClick={() => setOtherMenuOpen(false)}
+                      className="block px-4 py-2 hover:bg-gray-100 hover:text-[#0a375d] transition"
+                    >
+                      All Announcements
+                    </Link>
+                    <a
+                      href="#schedule"
+                      onClick={() => setOtherMenuOpen(false)}
+                      className="block px-4 py-2 hover:bg-gray-100 hover:text-[#0a375d] transition"
+                    >
+                      Schedule
+                    </a>
+                    <a
+                      href="#child-care"
+                      onClick={() => setOtherMenuOpen(false)}
+                      className="block px-4 py-2 hover:bg-gray-100 hover:text-[#0a375d] transition"
+                    >
+                      Child Care
+                    </a>
+                    <a
+                      href="#gospel-trip"
+                      onClick={() => setOtherMenuOpen(false)}
+                      className="block px-4 py-2 hover:bg-gray-100 hover:text-[#0a375d] transition"
+                    >
+                      Gospel Trip
+                    </a>
+                    <a
+                      href="#security"
+                      onClick={() => setOtherMenuOpen(false)}
+                      className="block px-4 py-2 hover:bg-gray-100 hover:text-[#0a375d] transition"
+                    >
+                      Security
+                    </a>
+                    <a
                       href="#about"
                       onClick={() => setOtherMenuOpen(false)}
                       className="block px-4 py-2 hover:bg-gray-100 hover:text-[#0a375d] transition"
@@ -100,20 +139,6 @@ export default function Home() {
                     >
                       Hotel & Location
                     </a>
-                    <Link
-                      href="/visit-charleston"
-                      onClick={() => setOtherMenuOpen(false)}
-                      className="block px-4 py-2 hover:bg-gray-100 hover:text-[#0a375d] transition"
-                    >
-                      Visit Charleston
-                    </Link>
-                    <Link
-                      href="/gtca-house"
-                      onClick={() => setOtherMenuOpen(false)}
-                      className="block px-4 py-2 hover:bg-gray-100 hover:text-[#0a375d] transition"
-                    >
-                      GTCA House
-                    </Link>
                     <a
                       href="#register"
                       onClick={() => setOtherMenuOpen(false)}
@@ -153,41 +178,27 @@ export default function Home() {
           {/* Mobile menu */}
           {mobileMenuOpen && (
             <nav className="md:hidden mt-8 pb-6 space-y-6">
-              <a
-                href="#announcements"
+              <Link
+                href="/messages"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block text-2xl hover:text-[#d4af37] transition py-2"
               >
-                Announcements
-              </a>
-              <a
-                href="#schedule"
+                Messages
+              </Link>
+              <Link
+                href="/gtca-house"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block text-2xl hover:text-[#d4af37] transition py-2"
               >
-                Schedule
-              </a>
-              <a
-                href="#child-care"
+                Charleston Gospel House
+              </Link>
+              <Link
+                href="/visit-charleston"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block text-2xl hover:text-[#d4af37] transition py-2"
               >
-                Child Care
-              </a>
-              <a
-                href="#gospel-trip"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-2xl hover:text-[#d4af37] transition py-2"
-              >
-                Gospel Trip
-              </a>
-              <a
-                href="#security"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block text-2xl hover:text-[#d4af37] transition py-2"
-              >
-                Security
-              </a>
+                Visit Charleston
+              </Link>
               <div>
                 <button
                   onClick={() => setMobileOtherMenuOpen(!mobileOtherMenuOpen)}
@@ -212,6 +223,66 @@ export default function Home() {
                 {mobileOtherMenuOpen && (
                   <div className="ml-6 mt-4 space-y-4 pl-4 border-l-2 border-[#d4af37]">
                     <a
+                      href="#announcements"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        setMobileOtherMenuOpen(false);
+                      }}
+                      className="block text-xl hover:text-[#d4af37] transition py-2"
+                    >
+                      Announcements
+                    </a>
+                    <Link
+                      href="/announcements"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        setMobileOtherMenuOpen(false);
+                      }}
+                      className="block text-xl hover:text-[#d4af37] transition py-2"
+                    >
+                      All Announcements
+                    </Link>
+                    <a
+                      href="#schedule"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        setMobileOtherMenuOpen(false);
+                      }}
+                      className="block text-xl hover:text-[#d4af37] transition py-2"
+                    >
+                      Schedule
+                    </a>
+                    <a
+                      href="#child-care"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        setMobileOtherMenuOpen(false);
+                      }}
+                      className="block text-xl hover:text-[#d4af37] transition py-2"
+                    >
+                      Child Care
+                    </a>
+                    <a
+                      href="#gospel-trip"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        setMobileOtherMenuOpen(false);
+                      }}
+                      className="block text-xl hover:text-[#d4af37] transition py-2"
+                    >
+                      Gospel Trip
+                    </a>
+                    <a
+                      href="#security"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        setMobileOtherMenuOpen(false);
+                      }}
+                      className="block text-xl hover:text-[#d4af37] transition py-2"
+                    >
+                      Security
+                    </a>
+                    <a
                       href="#about"
                       onClick={() => {
                         setMobileMenuOpen(false);
@@ -231,26 +302,6 @@ export default function Home() {
                     >
                       Hotel & Location
                     </a>
-                    <Link
-                      href="/visit-charleston"
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        setMobileOtherMenuOpen(false);
-                      }}
-                      className="block text-xl hover:text-[#d4af37] transition py-2"
-                    >
-                      Visit Charleston
-                    </Link>
-                    <Link
-                      href="/gtca-house"
-                      onClick={() => {
-                        setMobileMenuOpen(false);
-                        setMobileOtherMenuOpen(false);
-                      }}
-                      className="block text-xl hover:text-[#d4af37] transition py-2"
-                    >
-                      GTCA House
-                    </Link>
                     <a
                       href="#register"
                       onClick={() => {
@@ -794,12 +845,12 @@ export default function Home() {
               </div>
             </Link>
 
-            {/* GTCA House Card */}
-            <Link href="/gtca-house" className="group">
+            {/* Charleston Gospel House Card */}
+            <Link href="/gospel-house" className="group">
               <div className="bg-gradient-to-br from-[#fffef7] to-white border-2 border-[#d4af37] rounded-lg p-8 h-full hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
                 <div className="text-4xl mb-4">🏡</div>
                 <h3 className="text-2xl font-bold text-[#0a375d] mb-4 group-hover:text-[#d4af37] transition">
-                  GTCA House
+                  Charleston Gospel House
                 </h3>
                 <p className="text-gray-700 mb-4">
                   A fully-furnished 3-bedroom house available for saints visiting Charleston. Sleeps up to 10 individuals with a suggested donation of $75/night per family.
