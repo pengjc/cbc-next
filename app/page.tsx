@@ -48,7 +48,7 @@ export default function Home() {
                 Messages
               </Link>
               <Link
-                href="/gtca-house"
+                href="/gospel-house"
                 className="hover:text-[#d4af37] transition"
               >
                 Charleston Gospel House
@@ -186,7 +186,7 @@ export default function Home() {
                 Messages
               </Link>
               <Link
-                href="/gtca-house"
+                href="/gospel-house"
                 onClick={() => setMobileMenuOpen(false)}
                 className="block text-2xl hover:text-[#d4af37] transition py-2"
               >
