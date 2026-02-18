@@ -8,6 +8,7 @@ interface Message {
   date: string;
   description: string;
   vimeoUrl: string;
+  audioUrl?: string;
 }
 
 // Extract Vimeo video ID from URL
@@ -120,6 +121,37 @@ export default function MessagesPage() {
                             <p className="text-gray-500">
                               Invalid Vimeo URL
                             </p>
+                          </div>
+                        )}
+                        
+                        {/* Audio Player */}
+                        {message.audioUrl && (
+                          <div className="mt-6">
+                            <div className="bg-[#f0f4f8] p-4 rounded-lg">
+                              <div className="flex items-center gap-3 mb-3">
+                                <svg className="w-5 h-5 text-[#0a375d]" fill="none" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3" />
+                                </svg>
+                                <h3 className="font-semibold text-[#0a375d]">Audio Only</h3>
+                              </div>
+                              <audio
+                                controls
+                                preload="metadata"
+                                className="w-full"
+                              >
+                                <source src={message.audioUrl} type="audio/mpeg" />
+                                Your browser does not support the audio element.
+                              </audio>
+                              <div className="mt-3 text-sm text-gray-600">
+                                <a
+                                  href={message.audioUrl}
+                                  download
+                                  className="text-[#0a375d] hover:text-[#1a5080] font-semibold"
+                                >
+                                  Download MP3 →
+                                </a>
+                              </div>
+                            </div>
                           </div>
                         )}
                       </div>

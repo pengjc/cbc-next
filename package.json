@@ -14,7 +14,7 @@
     "deploy:dry-run": "dotenv -e .env -- bash -c 'aws s3 sync ./out s3://$AWS_S3_BUCKET --dryrun'",
     "check-env": "dotenv -e .env -- bash -c 'echo \"AWS_S3_BUCKET: $AWS_S3_BUCKET\"; echo \"AWS_CLOUDFRONT_DISTRIBUTION_ID: $AWS_CLOUDFRONT_DISTRIBUTION_ID\"; echo \"AWS_REGION: $AWS_REGION\"'",
     "clean:bucket": "dotenv -e .env -- bash -c 'aws s3 rm s3://$AWS_S3_BUCKET --recursive'",
-    "upload-videos": "dotenv -e .env -- node scripts/upload-videos.js"
+    "extract-audio": "./scripts/extract-audio.sh"
   },
   "dependencies": {
     "next": "16.1.1",

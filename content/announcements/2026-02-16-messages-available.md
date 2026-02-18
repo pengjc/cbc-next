@@ -13,3 +13,5 @@ Visit the [Messages](/messages) page to view all three conference messages:
 - Proclaiming the Jubilee of Grace
 
 Each message includes the fellowship times with Brother Tony Barba and Brother Minoru Chen regarding The Truth Sets Us Free.
+
+**New:** Audio-only versions (MP3) are now available for download and streaming on the Messages page!
