@@ -11,6 +11,8 @@
     "sync": "dotenv -e .env -- bash -c 'aws s3 sync ./out s3://$AWS_S3_BUCKET --cache-control \"public, max-age=3600\" --delete'",
     "invalidate": "dotenv -e .env -- bash -c 'aws cloudfront create-invalidation --distribution-id $AWS_CLOUDFRONT_DISTRIBUTION_ID --paths \"/*\"'",
     "deploy": "npm run build && npm run sync && npm run invalidate",
+    "build:staging": "CBC_STAGING=1 npm run build",
+    "deploy:staging": "npm run build:staging && aws s3 sync ./.next-staging s3://cbc-staging-587629093059 --cache-control 'public, max-age=60' --delete",
     "deploy:dry-run": "dotenv -e .env -- bash -c 'aws s3 sync ./out s3://$AWS_S3_BUCKET --dryrun'",
     "check-env": "dotenv -e .env -- bash -c 'echo \"AWS_S3_BUCKET: $AWS_S3_BUCKET\"; echo \"AWS_CLOUDFRONT_DISTRIBUTION_ID: $AWS_CLOUDFRONT_DISTRIBUTION_ID\"; echo \"AWS_REGION: $AWS_REGION\"'",
     "clean:bucket": "dotenv -e .env -- bash -c 'aws s3 rm s3://$AWS_S3_BUCKET --recursive'",
