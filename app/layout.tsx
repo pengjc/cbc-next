@@ -19,34 +19,20 @@ const merriweather = Merriweather({
 });
 
 export const metadata: Metadata = {
-  title: "Carolinas Blending Conference 2026 | Charleston, SC",
-  description: "Join us for the Carolinas Blending Conference January 17-18, 2026 in Charleston, SC. General subject: Proclaiming the Gospel, Christ as the Jubilee of Grace.",
-  icons: {
-    icon: '/cbc-logo.svg',
-    apple: '/cbc-logo.svg',
-  },
+  metadataBase: new URL("https://carolinasblendingconference.org"),
+  title: "Carolinas Blending Conference 2027",
+  description: "Join the 2027 Carolinas Blending Conference, January 15–17 at The Ellie Beach Resort in Myrtle Beach, South Carolina.",
+  icons: { icon: "/cbc-logo.svg", apple: "/cbc-logo.svg" },
   openGraph: {
-    title: "Carolinas Blending Conference 2026",
-    description: "January 17-18, 2026 in Charleston, SC. Proclaiming the Gospel, Christ as the Jubilee of Grace.",
+    title: "Carolinas Blending Conference 2027",
+    description: "January 15–17, 2027 at The Ellie Beach Resort in Myrtle Beach, South Carolina.",
     url: "https://carolinasblendingconference.org",
     siteName: "Carolinas Blending Conference",
-    images: [
-      {
-        url: '/cbc-logo.svg',
-        width: 1200,
-        height: 630,
-        alt: 'Carolinas Blending Conference 2026',
-      },
-    ],
-    locale: 'en_US',
-    type: 'website',
+    images: [{ url: "/cbc-logo.svg", width: 1200, height: 630, alt: "Carolinas Blending Conference" }],
+    locale: "en_US",
+    type: "website",
   },
-  twitter: {
-    card: 'summary_large_image',
-    title: "Carolinas Blending Conference 2026",
-    description: "January 17-18, 2026 in Charleston, SC. Proclaiming the Gospel, Christ as the Jubilee of Grace.",
-    images: ['/cbc-logo.svg'],
-  },
+  twitter: { card: "summary_large_image", title: "Carolinas Blending Conference 2027", description: "January 15–17, 2027 at The Ellie Beach Resort in Myrtle Beach, South Carolina.", images: ["/cbc-logo.svg"] },
 };
 
 export default function RootLayout({
