@@ -1,0 +1,90 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Private storage and public signup endpoint for CBC 2027 updates
+Parameters:
+  RecaptchaProject:
+    Type: String
+    Default: cbc-conference-updates
+  RecaptchaSiteKeys:
+    Type: String
+    Default: '{"carolinasblendingconference.org":"6LdBwh0uAAAAAL_ETi31682SC9S1jh3rL6YfBjY1","www.carolinasblendingconference.org":"6LdBwh0uAAAAAL_ETi31682SC9S1jh3rL6YfBjY1","cbc-staging-587629093059.s3-website-us-east-1.amazonaws.com":"6LdBwh0uAAAAAL_ETi31682SC9S1jh3rL6YfBjY1","localhost":"6Lf3px0uAAAAAFEISQcqCC6q2U_QmcX2xr8Tqw83"}'
+  RecaptchaApiKeyParameter:
+    Type: String
+    Default: /cbc/conference-2027/recaptcha-api-key
+  WhatsappInviteParameter:
+    Type: String
+    Default: /cbc/conference-2027/whatsapp-invite
+  AllowedOrigins:
+    Type: CommaDelimitedList
+    Default: 'https://carolinasblendingconference.org,https://www.carolinasblendingconference.org,http://cbc-staging-587629093059.s3-website-us-east-1.amazonaws.com,http://localhost:3000'
+Resources:
+  Subscribers:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      TableClass: STANDARD
+      AttributeDefinitions:
+        - AttributeName: email
+          AttributeType: S
+      KeySchema:
+        - AttributeName: email
+          KeyType: HASH
+  SignupApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      StageName: '$default'
+      CorsConfiguration:
+        AllowOrigins: !Ref AllowedOrigins
+        AllowMethods: [POST, OPTIONS]
+        AllowHeaders: [Content-Type]
+        MaxAge: 600
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 5
+        ThrottlingRateLimit: 2
+  SignupFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: function/
+      Handler: index.handler
+      Runtime: nodejs24.x
+      Architectures: [arm64]
+      MemorySize: 128
+      Timeout: 15
+      Environment:
+        Variables:
+          TABLE_NAME: !Ref Subscribers
+          RECAPTCHA_PROJECT: !Ref RecaptchaProject
+          RECAPTCHA_SITE_KEYS: !Ref RecaptchaSiteKeys
+          RECAPTCHA_API_KEY_PARAMETER: !Ref RecaptchaApiKeyParameter
+          WHATSAPP_INVITE_PARAMETER: !Ref WhatsappInviteParameter
+          ALLOWED_ORIGINS: !Join [',', !Ref AllowedOrigins]
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action: dynamodb:PutItem
+              Resource: !GetAtt Subscribers.Arn
+            - Effect: Allow
+              Action: ssm:GetParameter
+              Resource:
+                - !Sub 'arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter${RecaptchaApiKeyParameter}'
+                - !Sub 'arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter${WhatsappInviteParameter}'
+      Events:
+        Subscribe:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref SignupApi
+            Path: /subscriptions
+            Method: POST
+            PayloadFormatVersion: '2.0'
+  SignupLogs:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub '/aws/lambda/${SignupFunction}'
+      RetentionInDays: 14
+Outputs:
+  SubscriptionsEndpoint:
+    Value: !Sub 'https://${SignupApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/subscriptions'
+  SubscribersTable:
+    Value: !Ref Subscribers

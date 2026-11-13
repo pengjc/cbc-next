@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { UpdatesProvider, UpdateActions, UpdatesPrompt } from "./components/ConferenceUpdates";
 import "./conference-2027.css";
 
 const hotelUrl = "https://www.hilton.com/en/hotels/myrobup-the-ellie-beach-resort-myrtle-beach/";
@@ -8,6 +9,7 @@ const reviewsUrl = "https://www.tripadvisor.com/Hotel_Review-g54359-d27165487-Re
 export default function Home() {
   return (
     <div className="conference-site">
+      <UpdatesProvider>
       <a className="skip-link" href="#main">Skip to content</a>
       <header className="site-header">
         <div className="header-inner">
@@ -27,14 +29,15 @@ export default function Home() {
             <p className="hero-intro">Carolinas Blending Conference</p>
             <div className="hero-rule" />
             <div className="hero-details"><p><strong>January 15–17, 2027</strong><br />Conference weekend</p><p><strong>The Ellie Beach Resort</strong><br />Myrtle Beach, South Carolina</p></div>
-            <a className="button button-light" href="#schedule">Explore the weekend <span aria-hidden="true">↗</span></a>
+            <UpdateActions tone="light" />
+            <a className="hero-explore" href="#schedule">Explore the weekend <span aria-hidden="true">↓</span></a>
           </div>
           <p className="hero-caption">THE ELLIE BEACH RESORT · SITE VISIT PHOTO</p>
         </section>
 
         <section className="welcome wrap section-pad">
           <p className="eyebrow">A WEEKEND TOGETHER <span> / </span> 01</p>
-          <div className="welcome-grid"><h2>Blending the churches<br />in the <em>Carolinas.</em></h2><div><p className="lead">We look forward to a time of fellowship and blending with saints from across the Carolinas.</p><p>Join us in Myrtle Beach for meetings on Saturday and Lord’s Day, followed by gospel trips beginning Lord’s Day evening and gospel activities on Monday.</p><a className="text-link" href="#gospel-trips">Learn about the gospel trips <span aria-hidden="true">↗</span></a></div></div>
+          <div className="welcome-grid"><h2>Blending the churches<br />in the <em>Carolinas.</em></h2><div><p className="lead">We look forward to a time of fellowship and blending with saints from across the Carolinas.</p><p>Join us in Myrtle Beach for meetings on Saturday and Lord’s Day, followed by gospel trips beginning Lord’s Day evening and gospel activities on Monday.</p><a className="text-link" href="#gospel-trips">Learn about the gospel trips <span aria-hidden="true">↗</span></a><UpdatesPrompt welcome /></div></div>
         </section>
 
         <section id="schedule" className="schedule-section section-pad">
@@ -46,6 +49,7 @@ export default function Home() {
               <article><div className="date-num">18 <span>MON</span></div><div className="schedule-line" /><h3>Gospel distributions</h3><p>Bibles for America or The Truth Sets Us Free distributions at the MLK Day parades in Wilmington and Charleston.</p></article>
             </div>
             <p className="small-note">Conference registration and further details will be announced here.</p>
+            <UpdatesPrompt />
           </div>
         </section>
 
@@ -98,12 +102,14 @@ export default function Home() {
               </article>
             </div>
             <p className="trip-note">Distribution arrangements, meeting places, departure times, transportation, and participation details for both cities will be shared when available.</p>
+            <UpdatesPrompt light />
           </div>
         </section>
 
         <section className="archive-section section-pad"><div className="wrap archive-inner"><div><p className="eyebrow">FROM THE ARCHIVE <span> / </span> 05</p><h2>Conference archives</h2><p>Revisit the messages from the 2026 Carolinas Blending Conference in Charleston. Video and audio recordings are available.</p></div><div className="archive-links"><Link className="button button-dark" href="/archive/2026/messages">2026 conference recordings <span aria-hidden="true">↗</span></Link><Link className="text-link" href="/archive/2026">Explore the 2026 archive <span aria-hidden="true">↗</span></Link></div></div></section>
       </main>
       <footer className="site-footer"><div className="wrap footer-inner"><div><Image src="/cbc-logo-white.svg" alt="Carolinas Blending Conference" width={86} height={45} /><p>Carolinas Blending Conference<br />Myrtle Beach, South Carolina · 2027</p></div><a href="#top">Back to top ↑</a></div></footer>
+      </UpdatesProvider>
     </div>
   );
 }
