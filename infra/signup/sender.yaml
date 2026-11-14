@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Conference registration sender with Easy DKIM in the existing hosted zone
+Parameters:
+  HostedZoneId: {Type: String}
+Resources:
+  Sender:
+    Type: AWS::SES::EmailIdentity
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
+    Properties:
+      EmailIdentity: carolinasblendingconference.org
+      DkimAttributes: {SigningEnabled: true}
+  Records:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneId: !Ref HostedZoneId
+      RecordSets:
+        - Name: !GetAtt Sender.DkimDNSTokenName1
+          Type: CNAME
+          TTL: '600'
+          ResourceRecords: [!GetAtt Sender.DkimDNSTokenValue1]
+        - Name: !GetAtt Sender.DkimDNSTokenName2
+          Type: CNAME
+          TTL: '600'
+          ResourceRecords: [!GetAtt Sender.DkimDNSTokenValue2]
+        - Name: !GetAtt Sender.DkimDNSTokenName3
+          Type: CNAME
+          TTL: '600'
+          ResourceRecords: [!GetAtt Sender.DkimDNSTokenValue3]

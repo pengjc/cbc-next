@@ -2,12 +2,20 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: Private storage and public signup endpoint for CBC 2027 updates
 Parameters:
+  RegistrationOrigin:
+    Type: String
+    Default: https://carolinasblendingconference.org
+    AllowedPattern: 'https://[A-Za-z0-9.-]+'
+  RegistrationOpen:
+    Type: String
+    AllowedValues: ['true', 'false']
+    Default: 'false'
   RecaptchaProject:
     Type: String
     Default: cbc-conference-updates
   RecaptchaSiteKeys:
     Type: String
-    Default: '{"carolinasblendingconference.org":"6LdBwh0uAAAAAL_ETi31682SC9S1jh3rL6YfBjY1","www.carolinasblendingconference.org":"6LdBwh0uAAAAAL_ETi31682SC9S1jh3rL6YfBjY1","cbc-staging-587629093059.s3-website-us-east-1.amazonaws.com":"6LdBwh0uAAAAAL_ETi31682SC9S1jh3rL6YfBjY1","localhost":"6Lf3px0uAAAAAFEISQcqCC6q2U_QmcX2xr8Tqw83"}'
+    Default: '{"carolinasblendingconference.org":"6LdBwh0uAAAAAL_ETi31682SC9S1jh3rL6YfBjY1","www.carolinasblendingconference.org":"6LdBwh0uAAAAAL_ETi31682SC9S1jh3rL6YfBjY1","cbc-staging-587629093059.s3-website-us-east-1.amazonaws.com":"6LdBwh0uAAAAAL_ETi31682SC9S1jh3rL6YfBjY1","dytw413fchjuk.cloudfront.net":"6LdBwh0uAAAAAL_ETi31682SC9S1jh3rL6YfBjY1","localhost":"6Lf3px0uAAAAAFEISQcqCC6q2U_QmcX2xr8Tqw83"}'
   RecaptchaApiKeyParameter:
     Type: String
     Default: /cbc/conference-2027/recaptcha-api-key
@@ -31,59 +39,133 @@ Resources:
       KeySchema:
         - AttributeName: email
           KeyType: HASH
-  SignupApi:
-    Type: AWS::Serverless::HttpApi
+  ConferenceData:
+    Type: AWS::DynamoDB::Table
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
-      StageName: '$default'
-      CorsConfiguration:
-        AllowOrigins: !Ref AllowedOrigins
-        AllowMethods: [POST, OPTIONS]
-        AllowHeaders: [Content-Type]
-        MaxAge: 600
-      DefaultRouteSettings:
-        ThrottlingBurstLimit: 5
-        ThrottlingRateLimit: 2
-  SignupFunction:
+      BillingMode: PAY_PER_REQUEST
+      PointInTimeRecoverySpecification: {PointInTimeRecoveryEnabled: true}
+      AttributeDefinitions:
+        - {AttributeName: pk, AttributeType: S}
+        - {AttributeName: sk, AttributeType: S}
+      KeySchema:
+        - {AttributeName: pk, KeyType: HASH}
+        - {AttributeName: sk, KeyType: RANGE}
+  LinkChallenge:
     Type: AWS::Serverless::Function
     Properties:
       CodeUri: function/
-      Handler: index.handler
       Runtime: nodejs24.x
-      Architectures: [arm64]
-      MemorySize: 128
-      Timeout: 15
+      Handler: registration.challenge
+      Environment:
+        Variables: {DATA_TABLE: !Ref ConferenceData}
+      Policies:
+        - DynamoDBCrudPolicy: {TableName: !Ref ConferenceData}
+  FamilyPool:
+    Type: AWS::Cognito::UserPool
+    Properties:
+      UserPoolTier: ESSENTIALS
+      UsernameAttributes: [email]
+      UsernameConfiguration: {CaseSensitive: false}
+      AdminCreateUserConfig: {AllowAdminCreateUserOnly: true}
+      Policies:
+        SignInPolicy: {AllowedFirstAuthFactors: [PASSWORD, EMAIL_OTP]}
+      EmailConfiguration:
+        EmailSendingAccount: DEVELOPER
+        SourceArn: !Sub 'arn:${AWS::Partition}:ses:${AWS::Region}:${AWS::AccountId}:identity/carolinasblendingconference.org'
+        From: info@carolinasblendingconference.org
+      LambdaConfig:
+        DefineAuthChallenge: !GetAtt LinkChallenge.Arn
+        CreateAuthChallenge: !GetAtt LinkChallenge.Arn
+        VerifyAuthChallengeResponse: !GetAtt LinkChallenge.Arn
+  InvokeChallenge:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref LinkChallenge
+      Action: lambda:InvokeFunction
+      Principal: cognito-idp.amazonaws.com
+      SourceArn: !GetAtt FamilyPool.Arn
+  FamilyClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref FamilyPool
+      ExplicitAuthFlows: [ALLOW_CUSTOM_AUTH]
+      GenerateSecret: false
+  Registration:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: function/
+      Handler: registration.handler
+      Runtime: nodejs24.x
+      Timeout: 20
       Environment:
         Variables:
-          TABLE_NAME: !Ref Subscribers
+          DATA_TABLE: !Ref ConferenceData
+          POOL_ID: !Ref FamilyPool
+          APP_CLIENT: !Ref FamilyClient
+          REGISTRATION_ORIGIN: !Ref RegistrationOrigin
+          REGISTRATION_OPEN: !Ref RegistrationOpen
           RECAPTCHA_PROJECT: !Ref RecaptchaProject
           RECAPTCHA_SITE_KEYS: !Ref RecaptchaSiteKeys
+          RECAPTCHA_STAGING_SITE_KEY: 6LdBwh0uAAAAAL_ETi31682SC9S1jh3rL6YfBjY1
           RECAPTCHA_API_KEY_PARAMETER: !Ref RecaptchaApiKeyParameter
           WHATSAPP_INVITE_PARAMETER: !Ref WhatsappInviteParameter
           ALLOWED_ORIGINS: !Join [',', !Ref AllowedOrigins]
       Policies:
+        - DynamoDBCrudPolicy: {TableName: !Ref ConferenceData}
         - Statement:
             - Effect: Allow
-              Action: dynamodb:PutItem
-              Resource: !GetAtt Subscribers.Arn
+              Action: [cognito-idp:AdminCreateUser, cognito-idp:AdminInitiateAuth, cognito-idp:AdminRespondToAuthChallenge]
+              Resource: !GetAtt FamilyPool.Arn
             - Effect: Allow
               Action: ssm:GetParameter
               Resource:
                 - !Sub 'arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter${RecaptchaApiKeyParameter}'
                 - !Sub 'arn:${AWS::Partition}:ssm:${AWS::Region}:${AWS::AccountId}:parameter${WhatsappInviteParameter}'
+            - Effect: Allow
+              Action: ses:SendEmail
+              Resource: !Sub 'arn:${AWS::Partition}:ses:${AWS::Region}:${AWS::AccountId}:identity/carolinasblendingconference.org'
       Events:
-        Subscribe:
+        Link:
           Type: HttpApi
-          Properties:
-            ApiId: !Ref SignupApi
-            Path: /subscriptions
-            Method: POST
-            PayloadFormatVersion: '2.0'
-  SignupLogs:
-    Type: AWS::Logs::LogGroup
+          Properties: {ApiId: !Ref SignupApi, Path: /registration/link, Method: POST}
+        Redeem:
+          Type: HttpApi
+          Properties: {ApiId: !Ref SignupApi, Path: /registration/redeem, Method: POST}
+        Whatsapp:
+          Type: HttpApi
+          Properties: {ApiId: !Ref SignupApi, Path: /registration/whatsapp, Method: GET, Auth: {Authorizer: FamilyAuth}}
+        Read:
+          Type: HttpApi
+          Properties: {ApiId: !Ref SignupApi, Path: /registration/2027/me, Method: GET, Auth: {Authorizer: FamilyAuth}}
+        Save:
+          Type: HttpApi
+          Properties: {ApiId: !Ref SignupApi, Path: /registration/2027/me, Method: PUT, Auth: {Authorizer: FamilyAuth}}
+  SignupApi:
+    Type: AWS::Serverless::HttpApi
     Properties:
-      LogGroupName: !Sub '/aws/lambda/${SignupFunction}'
-      RetentionInDays: 14
+      Auth:
+        Authorizers:
+          FamilyAuth:
+            IdentitySource: '$request.header.Authorization'
+            JwtConfiguration:
+              issuer: !Sub 'https://cognito-idp.${AWS::Region}.amazonaws.com/${FamilyPool}'
+              audience: [!Ref FamilyClient]
+      StageName: '$default'
+      CorsConfiguration:
+        AllowOrigins: !Ref AllowedOrigins
+        AllowMethods: [GET, PUT, POST, OPTIONS]
+        AllowHeaders: [Content-Type, Authorization]
+        MaxAge: 600
+      DefaultRouteSettings:
+        ThrottlingBurstLimit: 5
+        ThrottlingRateLimit: 2
 Outputs:
+  ConferenceTable:
+    Value: !Ref ConferenceData
+  RegistrationFunction:
+    Value: !Ref Registration
   SubscriptionsEndpoint:
     Value: !Sub 'https://${SignupApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/subscriptions'
   SubscribersTable:

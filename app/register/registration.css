@@ -1,0 +1,86 @@
+.family-page {
+  max-width: 54rem;
+  margin: auto;
+  padding: clamp(1rem, 5vw, 4rem);
+  color: #153b39;
+  background: #fff;
+  min-height: 100vh;
+}
+.family-page h1,
+.family-page h2,
+.family-page h3 {
+  font-family: Georgia, serif;
+  margin: 0.8em 0 0.4em;
+}
+.family-page h1 {
+  font-size: clamp(2.4rem, 6vw, 4rem);
+}
+.family-page h2 {
+  font-size: 2rem;
+}
+.family-page header {
+  border-bottom: 1px solid #b8cac5;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+.family-page header a {
+  text-decoration: underline;
+}
+.family-page label {
+  display: block;
+  margin: 1rem 0;
+  font-weight: 600;
+}
+.family-page input:not([type="checkbox"]),
+.family-page select {
+  display: block;
+  width: 100%;
+  border: 1px solid #79968f;
+  border-radius: 0.3rem;
+  padding: 0.65rem;
+  background: white;
+  color: #142f2d;
+}
+.family-page input[type="checkbox"] {
+  margin-right: 0.6rem;
+}
+.family-page button {
+  background: #184e48;
+  color: white;
+  border-radius: 0.35rem;
+  padding: 0.65rem 1rem;
+  margin: 0.3rem 0.45rem 0.3rem 0;
+  cursor: pointer;
+}
+.family-page button:disabled {
+  opacity: 0.6;
+}
+.family-page nav button {
+  background: #edf3f0;
+  color: #184e48;
+}
+.family-page nav button[aria-current] {
+  background: #184e48;
+  color: white;
+}
+.family-page footer,
+.family-page details,
+.family-page section {
+  border-top: 1px solid #bdcec7;
+  padding: 1rem 0;
+  margin-top: 1rem;
+}
+.family-page summary {
+  cursor: pointer;
+  font-weight: bold;
+}
+.family-page fieldset {
+  min-width: 0;
+}
+.family-page [role="status"] {
+  margin-top: 1rem;
+  font-weight: bold;
+}
+.family-whatsapp{display:inline-block;background:#176647;color:white;border-radius:.35rem;padding:.75rem 1rem;margin:.75rem 0;font-weight:600}
+.family-page .registration-notice{position:sticky;top:.5rem;z-index:2;background:#e5f3ee;border-left:.35rem solid #176647;border-radius:.35rem;padding:1rem;margin:1rem 0;font-size:1.1rem;color:#123e33;font-weight:650}
+.family-page .trip-choice input[type=radio]{display:inline-block;width:auto;margin-right:.45rem}

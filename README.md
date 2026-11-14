@@ -15,32 +15,17 @@ Open http://localhost:3000. Run `npm run build` to compile announcements and gen
 
 ## Staging
 
-`npm run deploy:staging` builds a separate static export in `.next-staging/` and syncs it to the staging-only S3 bucket `cbc-staging-587629093059`. The command requires AWS CLI credentials with write and delete access to that bucket and removes staging objects absent from the build. It does not use the production bucket or CloudFront.
+`npm run deploy:staging` builds a separate static export in `.next-staging/` and syncs it to the staging-only S3 bucket `cbc-staging-587629093059`. The command requires AWS CLI credentials with write and delete access to that bucket and removes staging objects absent from the build. It uses the staging bucket and its dedicated CloudFront distribution.
 
-Staging is publicly readable at http://cbc-staging-587629093059.s3-website-us-east-1.amazonaws.com/ and uses HTTP, not HTTPS. The build requests that search engines do not index its pages; this is not access control. Do not publish private information there. Staging uses trailing-slash directory URLs for S3 website hosting. The normal production build and deployment retain their existing routing and output directory.
+Staging registration is available at https://dytw413fchjuk.cloudfront.net/register/ through staging CloudFront distribution E1L7DEBJSI6IH0. Staging builds resolve the API from the isolated cbc-registration-staging stack in us-east-1. Its Cognito pool and DynamoDB records are separate from production. Use synthetic registrations. The underlying S3 website endpoint is HTTP-only; use the HTTPS CloudFront URL for registration.
 
 ## Protected conference updates
 
-The hero, welcome section, schedule and gospel-trip prompts, and dismissible floating bar all open one shared dialog. Visitors select email updates, WhatsApp, or both, then complete one Google reCAPTCHA Enterprise checkbox and press Continue. No email is required for WhatsApp alone. The floating bar appears after the hero leaves view; dismissal lasts for the browser session.
+The homepage and dismissible floating bar link to `/register`. Requesting a registration email requires a reCAPTCHA Enterprise checkbox assessment for the action `conference_registration`, the configured key, and the exact allowed origin hostname. Redeeming a link enrolls the verified address in conference updates. Enrollment preserves existing subscriptions. Run `AWS_REGION=us-east-1 DATA_TABLE=<ConferenceTable> node infra/signup/function/backfill.mjs` to enroll previously verified accounts.
 
-### API and data
+Signed-in families can open the WhatsApp invitation from any registration step. The authenticated `GET /registration/whatsapp` endpoint reads the invitation separately from family data. The old public subscriptions route is retired. The API still exposes its historical stack output for frontend endpoint discovery.
 
-`POST /subscriptions` now accepts JSON `{ "subscribeEmail": true, "joinWhatsapp": false, "email": "person@example.com", "captchaToken": "..." }`. Both choice flags must be booleans and at least one must be true. Email is required only when `subscribeEmail` is true. One Google assessment with action `conference_updates` verifies the token, configured site key and exact hostname before either action. Missing/invalid tokens return 403; provider outages/quota exhaustion or missing configuration return 503. Invalid requests return 400. There is no verification bypass.
-
-A successful response contains `emailSubscribed` and, only if requested and verified, `inviteUrl`. All responses use `Cache-Control: no-store`. The invite is never included in the static export, frontend environment variables, or public scripts. Email storage remains a private DynamoDB Standard on-demand table with normalized `email` as primary key, `createdAt`, and `topic: conference-2027`. Conditional writes preserve duplicate handling. No confirmation emails or automated announcements are sent.
-
-The API enforces allowed origins, a 16 KiB decoded request limit, bounded tokens, and throttling (2 requests/second, burst 5). Origin checks are not authentication; CAPTCHA validation is required even for duplicate addresses. Application logs omit addresses, tokens, API credentials, and invitations. Logs expire after 14 days. The table is retained if the stack is deleted.
-
-### Google and AWS configuration
-
-Google project: `cbc-conference-updates`. Billing is disabled; both choices share the organization’s free assessment allowance. Verification fails closed when Google cannot assess a request, including quota exhaustion. Production and the staging S3 website hostname share a domain-restricted checkbox key; localhost has a separate key. Both use balanced challenge settings, with no fixed testing response. The new WhatsApp invite is separate from the historical invite in the 2026 archive.
-
-The Lambda reads two encrypted Standard SecureString parameters in `us-east-1`:
-
-- `/cbc/conference-2027/recaptcha-api-key`: Google API credential restricted to `recaptchaenterprise.googleapis.com`.
-- `/cbc/conference-2027/whatsapp-invite`: HTTPS group/community invite on `chat.whatsapp.com`.
-
-Use a secure credential-handling process to create or update these parameters; never pass their values in command-line arguments, commit them, or print them to logs. The Lambda role has `ssm:GetParameter` for these two parameters and `dynamodb:PutItem` for the subscriber table, plus runtime logging permissions. Parameters are cached for five minutes; normal rotations take effect after that interval. Redeploy a new Lambda configuration to clear warm caches immediately if necessary. Revoke old Google credentials only after replacements are stored and verified. Resetting an invite in WhatsApp is necessary to invalidate previously shared invitations; CAPTCHA cannot prevent someone sharing a link after receiving it.
+Google project `cbc-conference-updates` allows the production and HTTPS staging hosts on its checkbox key. Localhost uses a separate key. The API reads the encrypted parameters `/cbc/conference-2027/recaptcha-api-key` and `/cbc/conference-2027/whatsapp-invite` in us-east-1.
 
 ### Development and deployment
 
@@ -66,9 +51,7 @@ NEXT_PUBLIC_RECAPTCHA_LOCAL_SITE_KEY=<localhost checkbox key ID>
 
 Restart development after changing environment values. A missing endpoint or required site key shows an unavailable message. Only the public keys and API URL belong in frontend configuration; the Google API credential and invite remain in Parameter Store. The SAM template configures server-side hostname-to-site-key mappings, which must match these keys.
 
-Allowed API origins include the HTTPS production domain and its www variant, `http://cbc-staging-587629093059.s3-website-us-east-1.amazonaws.com`, and localhost:3000. The staging hostname maps to the production checkbox key, so staging builds use the same `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`. Staging and production use the same live subscriber table and WhatsApp invitation; remove staging test addresses after testing. Backend deployment does not publish either website; website deployment remains separate. There is no database migration and existing recipients remain intact.
-
-Run tests, changed-file lint, and `npm run build`. Browser-check desktop/mobile, keyboard focus, the shared checkbox, expiry and retries, and bar dismissal. A user must complete real CAPTCHA challenges for live success testing. Use synthetic example.com addresses, confirm the intended DynamoDB record and invite response, then remove test records. Do not join the actual community as part of automated testing.
+Local development uses the isolated registration API. Set NEXT_PUBLIC_SUBSCRIPTIONS_ENDPOINT in .env.development.local to the staging SubscriptionsEndpoint output. When deploying cbc-registration-staging, keep both https://dytw413fchjuk.cloudfront.net and http://localhost:3000 in AllowedOrigins. The emailed link opens the HTTPS staging form. Test the public challenge on staging and confirm new and returning registrations appear once in the subscriber export.
 
 ### Export recipients for manual emails
 
@@ -84,9 +67,25 @@ The command uses your AWS CLI credentials, resolves the table from the stack, an
 Normalize the requested address to lowercase and trim whitespace. Resolve the table using the stack output above, then run with authorized AWS credentials:
 
 ```bash
-aws dynamodb delete-item --region us-east-1 --table-name TABLE_NAME --key '{"email":{"S":"person@example.com"}}'
+aws dynamodb delete-item --region us-east-1 --table-name TABLE_NAME --key '{"pk":{"S":"SUBSCRIBER#person@example.com"},"sk":{"S":"conference-2027"}}'
 ```
 
 This requires `dynamodb:DeleteItem` on the table. Remove the address from any previously exported mailing lists too. Since no suppression list is maintained, the person can sign up again later.
 
 Run `npm run test:signup` for mocked verification, failure, combined-choice, deduplication, and paginated-export tests. Keep mocks confined to tests; never configure a production verification bypass.
+
+### 2027 family registration rollout
+
+Use us-east-1. Verify the SES domain identity for carolinasblendingconference.org using Easy DKIM in the existing Route 53 hosted zone, confirm SES production access and test delivery. Deploy the signup stack initially with RegistrationOpen=false. The stack creates ConferenceData alongside the retained Subscribers table and routes new subscriptions into ConferenceData. Set DATA_TABLE to the ConferenceTable stack output and LEGACY_TABLE to the SubscribersTable output. With operator credentials run:
+
+    node infra/signup/function/rollout.mjs migrate
+    node infra/signup/function/rollout.mjs migrate --apply
+
+The migration copies existing subscriptions conditionally and reads them back before reporting success. Keep a backup of the legacy table and retire it after verification. Subscriber exports now resolve ConferenceTable. Test registration using an isolated stack and synthetic addresses on HTTPS. The frontend derives its registration API URL from NEXT_PUBLIC_SUBSCRIPTIONS_ENDPOINT. Enable RegistrationOpen=true when deploying the tested stack, publish the HTTPS site, check live delivery and redemption, then preview and run the invitation send:
+
+    node infra/signup/function/rollout.mjs invite
+    node infra/signup/function/rollout.mjs invite --apply
+
+Run a single invitation worker at a time. Repeating the command skips delivered invitations and verified registrations. The operator needs DynamoDB access and SES sending permission. Conference receipts and sign-in messages contain no family answers.
+
+If the domain identity does not already exist, deploy infra/signup/sender.yaml with the existing Route 53 HostedZoneId to provision SES and its DKIM records. For isolated HTTPS testing set RegistrationOrigin to the test site and allow that origin on the API.

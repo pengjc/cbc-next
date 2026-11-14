@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { UpdatesProvider, UpdateActions, UpdatesPrompt } from "./components/ConferenceUpdates";
+import { RegistrationBar, RegistrationPrompt } from "./components/ConferenceUpdates";
 import "./conference-2027.css";
 
 const hotelUrl = "https://www.hilton.com/en/hotels/myrobup-the-ellie-beach-resort-myrtle-beach/";
@@ -9,7 +9,7 @@ const reviewsUrl = "https://www.tripadvisor.com/Hotel_Review-g54359-d27165487-Re
 export default function Home() {
   return (
     <div className="conference-site">
-      <UpdatesProvider>
+      <RegistrationBar>
       <a className="skip-link" href="#main">Skip to content</a>
       <header className="site-header">
         <div className="header-inner">
@@ -29,7 +29,7 @@ export default function Home() {
             <p className="hero-intro">2027 Carolinas Blending Conference</p>
             <div className="hero-rule" />
             <div className="hero-details"><p><strong>January 15–17, 2027</strong><br />Conference weekend</p><p><strong>The Ellie Beach Resort</strong><br />Myrtle Beach, South Carolina</p></div>
-            <UpdateActions tone="light" />
+            <Link className="button button-light" href="/register">Register or manage registration</Link>
             <a className="hero-explore" href="#schedule">Explore the weekend <span aria-hidden="true">↓</span></a>
           </div>
           <p className="hero-caption">THE ELLIE BEACH RESORT · SITE VISIT PHOTO</p>
@@ -37,7 +37,7 @@ export default function Home() {
 
         <section className="welcome wrap section-pad">
           <p className="eyebrow">A WEEKEND TOGETHER <span> / </span> 01</p>
-          <div className="welcome-grid"><h2>Blending the churches<br />in the <em>Carolinas.</em></h2><div><p className="lead">We look forward to a time of fellowship and blending with saints from across the Carolinas.</p><p>Join us in Myrtle Beach for meetings on Saturday and Lord’s Day, followed by gospel trips beginning Lord’s Day evening and gospel activities on Monday.</p><a className="text-link" href="#gospel-trips">Learn about the gospel trips <span aria-hidden="true">↗</span></a><UpdatesPrompt welcome /></div></div>
+          <div className="welcome-grid"><h2>Blending the churches<br />in the <em>Carolinas.</em></h2><div><p className="lead">We look forward to a time of fellowship and blending with saints from across the Carolinas.</p><p>Join us in Myrtle Beach for meetings on Saturday and Lord’s Day, followed by gospel trips beginning Lord’s Day evening and gospel activities on Monday.</p><a className="text-link" href="#gospel-trips">Learn about the gospel trips <span aria-hidden="true">↗</span></a><RegistrationPrompt welcome /></div></div>
         </section>
 
         <section id="schedule" className="schedule-section section-pad">
@@ -48,15 +48,14 @@ export default function Home() {
               <article><div className="date-num">17 <span>LORD’S DAY</span></div><div className="schedule-line" /><h3>Conference &amp; gospel trips</h3><p>Conference meeting at 10:00 AM at The Ellie. Gospel trip coordination at 7:30 PM in Wilmington and Charleston.</p></article>
               <article><div className="date-num">18 <span>MON</span></div><div className="schedule-line" /><h3>Gospel distributions</h3><p>Bibles for America or The Truth Sets Us Free distributions at the MLK Day parades in Wilmington and Charleston.</p></article>
             </div>
-            <p className="small-note">Conference registration and further details will be announced here.</p>
-            <UpdatesPrompt />
+            <RegistrationPrompt />
           </div>
         </section>
 
         <section id="venue" className="venue-section section-pad"><div className="wrap">
           <div className="section-heading"><div><p className="eyebrow">THE PLACE <span> / </span> 03</p><h2>Meet us at The Ellie.</h2></div></div>
           <div className="venue-grid"><figure className="photo-card main-photo"><Image src="/2027/meeting-space.webp" alt="Meeting space at The Ellie with windows overlooking the ocean" width={1600} height={1000} /><figcaption>Meeting space at The Ellie · site visit photo</figcaption></figure><div className="venue-copy"><p className="eyebrow">THE ELLIE BEACH RESORT MYRTLE BEACH</p><h3>A place to meet<br /><em>and stay together.</em></h3><p>The Ellie Beach Resort is a beachfront hotel where both the conference meetings and guest rooms will be located. Our main meetings will be in the Carolina Ballroom.</p><p>Tripadvisor classifies The Ellie as a four-star hotel. Guests rate The Ellie 4.3 out of 5 on Tripadvisor, as of November 2026.</p><a className="text-link" href={reviewsUrl} target="_blank" rel="noopener noreferrer">See the hotel classification and guest reviews <span aria-hidden="true">↗</span></a><address>3200 South Ocean Boulevard<br />Myrtle Beach, SC 29577</address><a className="text-link" href={hotelUrl} target="_blank" rel="noopener noreferrer">Visit the hotel website <span aria-hidden="true">↗</span></a><br /><a className="text-link" href="https://www.hilton.com/en/hotels/myrobup-the-ellie-beach-resort-myrtle-beach/gallery/" target="_blank" rel="noopener noreferrer">Explore the hotel photo gallery <span aria-hidden="true">↗</span></a></div></div>
-          <div className="details-grid"><article><span>01 / STAY</span><h3>Guest rooms</h3><p>Plan for Friday and Saturday nights, January 15 and 16, with departure on Lord’s Day. Reservation information and the group booking link are forthcoming.</p></article><article><span>02 / FAMILIES</span><h3>Children’s arrangements</h3><p>Childcare will be provided during all three conference meetings for children in kindergarten through 6th grade, with three separate children’s rooms in the Atlantic Ballroom.</p><p>Middle school and high school students are expected to attend the conference meetings. Registration and further details will be shared when available.</p><p>The indoor pools will be open during the conference weekend. Families can also enjoy the game room, with Ping-Pong, cornhole, Connect Four, and foosball, as well as mini golf at the resort.</p></article><article><span>03 / GETTING HERE</span><h3>Travel &amp; parking</h3><p>The hotel is less than ten minutes from Myrtle Beach International Airport. Conference parking details will be announced here.</p></article></div>
+          <div className="details-grid"><article><span>01 / STAY</span><h3>Guest rooms</h3><p>Plan for Friday and Saturday nights, January 15 and 16, with departure on Lord’s Day. Save your registration before opening the Hilton booking link.</p></article><article><span>02 / FAMILIES</span><h3>Children’s arrangements</h3><p>Childcare will be provided during all three conference meetings for children in kindergarten through 6th grade, with three separate children’s rooms in the Atlantic Ballroom.</p><p>Middle school and high school students are expected to attend the conference meetings. Registration and further details will be shared when available.</p><p>The indoor pools will be open during the conference weekend. Families can also enjoy the game room, with Ping-Pong, cornhole, Connect Four, and foosball, as well as mini golf at the resort.</p></article><article><span>03 / GETTING HERE</span><h3>Travel &amp; parking</h3><p>The hotel is less than ten minutes from Myrtle Beach International Airport. Conference parking details will be announced here.</p></article></div>
           <figure className="room-feature"><Image src="/2027/guest-room.webp" alt="A guest room at The Ellie with two beds and a balcony" width={1600} height={1000} /><figcaption>A guest room at The Ellie · site visit photo</figcaption></figure>
         </div></section>
 
@@ -102,14 +101,14 @@ export default function Home() {
               </article>
             </div>
             <p className="trip-note">Distribution arrangements, meeting places, departure times, transportation, and participation details for both cities will be shared when available.</p>
-            <UpdatesPrompt light />
+            <RegistrationPrompt light />
           </div>
         </section>
 
         <section className="archive-section section-pad"><div className="wrap archive-inner"><div><p className="eyebrow">FROM THE ARCHIVE <span> / </span> 05</p><h2>Conference archives</h2><p>Revisit the messages from the 2026 Carolinas Blending Conference in Charleston. Video and audio recordings are available.</p></div><div className="archive-links"><Link className="button button-dark" href="/archive/2026/messages">2026 conference recordings <span aria-hidden="true">↗</span></Link><Link className="text-link" href="/archive/2026">Explore the 2026 archive <span aria-hidden="true">↗</span></Link></div></div></section>
       </main>
       <footer className="site-footer"><div className="wrap footer-inner"><div><Image src="/cbc-logo-white.svg" alt="Carolinas Blending Conference" width={86} height={45} /><p>Carolinas Blending Conference<br />Myrtle Beach, South Carolina · 2027</p></div><a href="#top">Back to top ↑</a></div></footer>
-      </UpdatesProvider>
+      </RegistrationBar>
     </div>
   );
 }

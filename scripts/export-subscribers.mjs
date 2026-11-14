@@ -47,7 +47,7 @@ async function main() {
   let table = options.table;
   if (!table) {
     const result = await aws(["cloudformation", "describe-stacks", "--stack-name", options.stack ?? "cbc-conference-signup"]);
-    table = result.Stacks?.[0]?.Outputs?.find(output => output.OutputKey === "SubscribersTable")?.OutputValue;
+    table = result.Stacks?.[0]?.Outputs?.find(output => output.OutputKey === "ConferenceTable")?.OutputValue;
     if (!table) throw new Error("No SubscribersTable stack output found.");
   }
   const emails = await collectSubscribers(cursor => aws([
