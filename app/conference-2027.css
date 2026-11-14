@@ -4,6 +4,7 @@
 .distribution-links{display:flex;flex-wrap:wrap;gap:12px 22px;margin-top:18px}.distribution-links a{color:#e0eee9;font-size:13px;font-weight:700;text-decoration:none;border-bottom:1px solid #81a6a2;padding-bottom:6px}.distribution-links a:hover{text-decoration:underline}
 .welcome-grid p + p,
 .venue-copy p + p,
+.details-grid p + p,
 .trip-grid p + p {
   margin-top: 0.75rem;
 }
