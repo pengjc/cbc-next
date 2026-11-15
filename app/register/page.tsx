@@ -1,4 +1,5 @@
 "use client";
+import { ConferenceHotelRate, hiltonGroupBookingUrl } from "../components/ConferenceHotelRate";
 import {Captcha} from "../components/RegistrationCaptcha";
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./registration.css";
@@ -429,13 +430,12 @@ export default function Register() {
                 Ellie covering January 15 or 16. You can save and come back
                 after booking.
               </p>
+              <ConferenceHotelRate />
               <button
                 onClick={() =>
                   action(async () => {
                     await save(step);
-                    location.assign(
-                      "https://www.hilton.com/en/attend-my-event/church-of-columbia-27/",
-                    );
+                    location.assign(hiltonGroupBookingUrl);
                   })
                 }
               >
