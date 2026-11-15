@@ -3,6 +3,7 @@ import {Captcha} from "../components/RegistrationCaptcha";
 import { useCallback, useEffect, useRef, useState } from "react";
 import "./registration.css";
 import Link from "next/link";
+import {changes} from "../../infra/signup/function/record.mjs";
 import {missing} from "../../infra/signup/function/family.mjs";
 
 type Fields = Record<string, string>;
@@ -42,7 +43,7 @@ async function api(
       data.errors?.join(" ") ||
         data.error ||
         (response.status === 401 || response.status === 403
-          ? "Your session or link has expired. Request a new email link."
+          ? (path === "/redeem" ? "This link may have been replaced or expired. Select Email me a new link to reopen your saved registration." : "Your session has expired. Request a new email link.")
           : "Unable to connect. Please try again."),
     );
   return data;
@@ -89,7 +90,8 @@ export default function Register() {
   const version = useRef(0);
   const writes = useRef(Promise.resolve());
   const editRevision = useRef(0);
-  const saveTimer = useRef<number | undefined>(undefined);
+  const acknowledged = useRef(serialize(blank));
+  const immediate = useRef(false);
   const dirty = useRef(false);
   const [opening,setOpening]=useState(true);
   const [captcha,setCaptcha]=useState("");
@@ -115,19 +117,29 @@ export default function Register() {
     // Defer redemption until the mount survives React strict-mode replay.
     const start = async () => {
       let t = sessionStorage.getItem("family-session") || "";
+      let data;
       if (params.has("token")) {
-        const result = await api("/redeem", "POST", Object.fromEntries(params));
-        t = result.token;
-        sessionStorage.setItem("family-session", t);
+        const linkEmail = params.get("email") || "";
+        address(linkEmail);
+        if (t) {
+          const saved = await api("/2027/me", "GET", undefined, t).catch(() => null);
+          if (saved?.email === linkEmail) data = saved;
+        }
+        if (!data) {
+          const result = await api("/redeem", "POST", Object.fromEntries(params));
+          t = result.token;
+          sessionStorage.setItem("family-session", t);
+        }
         history.replaceState(null, "", location.pathname);
       }
       if (!t) return;
-      const data = await api("/2027/me", "GET", undefined, t);
+      data ??= await api("/2027/me", "GET", undefined, t);
       if (!live) return;
       session(t);
       address(data.email);
       version.current = data.version;
       mark(data.status);
+      acknowledged.current=data.family || serialize(blank);
       if (data.family) {
         const { children, rooms, ...fields } = data.family;
         set({
@@ -159,18 +171,19 @@ export default function Register() {
       clearTimeout(timer);
     };
   }, []);
-  function edit(update: (current: Family) => Family) {
+  function edit(update: (current: Family) => Family, saveImmediately = false) {
+    if (saveImmediately) immediate.current = true;
     editRevision.current++;
     dirty.current = true;
-    say("Unsaved changes…");
+    say("Editing…");
     set(update);
   }
   const change = (k: string, v: string) =>
     edit(current => ({ ...current, fields: { ...current.fields, [k]: v } }));
   const input = (k: string, label: string, options?: string[], type?: string) =>
     field(label, f.fields[k], (v) => change(k, v), options, type);
-  function editChildren(update: (children: Child[]) => Child[]) {
-    edit(current => ({...current, children:update(current.children)}));
+  function editChildren(update: (children: Child[]) => Child[], saveImmediately = false) {
+    edit(current => ({...current, children:update(current.children)}), saveImmediately);
   }
   function item(group: "rooms" | "children", i: number, k: string, v: string) {
     if (group === "children") {
@@ -181,7 +194,7 @@ export default function Register() {
   }
   async function action(fn: () => Promise<void>) {
     wait(true);
-    say("");
+    if (!token) say("");
     try {
       await fn();
     } catch (e) {
@@ -190,34 +203,32 @@ export default function Register() {
       wait(false);
     }
   }
-  const persist = useCallback((snapshot:Family, complete=false) => {
-    const write = writes.current.then(async () => {
-      const result = await api("/2027/me","PUT",{
-        family:serialize(snapshot), version:version.current, complete
-      },token);
-      version.current=result.version;
-      mark(result.status);
-      return result;
+  const persist = useCallback((snapshot:Family) => {
+    const revision=editRevision.current;
+    const write=writes.current.then(async()=>{
+      const next=serialize(snapshot);
+      const patch=changes(acknowledged.current,next);
+      let receipt=true;
+      if(patch.length){
+        say("Saving…");
+        const result=await api("/2027/me","PATCH",{version:version.current,changes:patch},token);
+        acknowledged.current=next;
+        version.current=result.version;
+        mark(result.status);
+        receipt=result.receipt!==false;
+      }
+      if(revision===editRevision.current){
+        dirty.current=false;
+        say(receipt?"Changes saved.":"Changes saved. The confirmation email could not be sent.");
+      }
     });
-    writes.current=write.then(()=>undefined,()=>undefined);
+    writes.current=write.catch(()=>{});
     return write;
   },[token]);
-
+  const flush=useCallback((snapshot:Family)=>persist(snapshot).catch(e=>say("Changes not saved. "+e.message)),[persist]);
   useEffect(()=>{
-    if(!token || !dirty.current) return;
-    const revision = editRevision.current;
-    let current=true;
-    saveTimer.current=window.setTimeout(async()=>{
-      say("Saving changes…");
-      try {
-        await persist(f);
-        if(current && revision === editRevision.current){dirty.current=false;say("Changes saved.");}
-      } catch(error) {
-        if(current && revision === editRevision.current) say("Changes not saved. " + (error instanceof Error ? error.message : "Try Save and finish later."));
-      }
-    },750);
-    return ()=>{current=false;window.clearTimeout(saveTimer.current);};
-  },[f,persist,token]);
+    if(immediate.current){immediate.current=false;void flush(f);}
+  },[f,flush]);
 
   useEffect(()=>{
     function warn(event:BeforeUnloadEvent){if(dirty.current){event.preventDefault();event.returnValue="";}}
@@ -226,30 +237,25 @@ export default function Register() {
   },[]);
 
   const payload=serialize(f);
-  async function save(next: number, complete = false) {
-    window.clearTimeout(saveTimer.current);
-    const result=await persist(f,complete);
-    dirty.current=false;
-
+  const remaining = missing(payload);
+  async function save(next:number){
+    if(dirty.current)await persist(f);
     go(next);
-    say(
-      result.receipt === false
-        ? "Registration saved. The receipt could not be emailed."
-        : "Saved · " +
-            (result.status === "complete"
-              ? "Registration complete"
-              : "Registration incomplete"),
-    );
   }
   return (
     <main className="family-page">
       <header>
-        <Link href="/">Carolinas Blending Conference</Link>
+        <Link href="/" onNavigate={event => {
+          if (dirty.current) {
+            event.preventDefault();
+            void action(async () => { await persist(f); location.assign("/"); });
+          }
+        }}>Carolinas Blending Conference</Link>
         <p>Myrtle Beach · January 15–17, 2027</p>
         <h1>Registration</h1>
       </header>
       <div role="status" aria-live="polite" className={opening || busy || msg ? "registration-notice" : undefined}>
-        {opening ? "Opening your registration… Please keep this page open." : busy ? (token ? "Saving your registration…" : "Sending your registration email…") : msg}
+        {opening ? "Opening your registration… Please keep this page open." : busy && !token ? "Sending your registration email…" : msg}
       </div>
       {opening ? null : !token ? (
         <form
@@ -269,11 +275,15 @@ export default function Register() {
           <button disabled={busy || !email || !captcha}>Email me a new link</button>
         </form>
       ) : (
-        <fieldset disabled={busy}>
+        <fieldset disabled={busy} onBlur={e=>{if(dirty.current && e.target.matches("input,select,textarea"))void flush(f);}}>
           <legend>
             {email} · {status === "complete" ? "Complete" : "Incomplete"}
           </legend>
-          {invite ? <a className="family-whatsapp" href={invite} target="_blank" rel="noopener noreferrer">Join the conference WhatsApp ↗</a> : inviteFailed ? <button type="button" onClick={()=>retryInvite(v=>v+1)}>Retry loading WhatsApp invitation</button> : <p>Loading WhatsApp invitation…</p>}
+          {dirty.current && msg && !["Editing…","Saving…"].includes(msg) && <button onClick={()=>void flush(f)}>Retry save</button>}
+          {remaining.length > 0 && <aside className="registration-remaining" aria-labelledby="remaining-title">
+            <strong id="remaining-title">Still needed to complete registration</strong>
+            <ul>{remaining.map(message => <li key={message}>{message}</li>)}</ul>
+          </aside>}
           <nav>
             {steps.map((s, i) => (
               <button
@@ -366,7 +376,7 @@ export default function Register() {
                   ))}
                   <button
                     onClick={() =>
-                      editChildren(children=>children.filter(x=>x.id!==c.id))
+                      editChildren(children => children.filter(x => x.id !== c.id), true)
                     }
                   >
                     Remove child
@@ -375,7 +385,7 @@ export default function Register() {
               ))}
               <button
                 onClick={() =>
-                  editChildren(children=>[...children,{id:crypto.randomUUID()}])
+                  editChildren(children => [...children, {id:crypto.randomUUID()}], true)
                 }
               >
                 Add a child
@@ -429,8 +439,9 @@ export default function Register() {
                   })
                 }
               >
-                Save and book at Hilton ↗
+                Book at Hilton ↗
               </button>
+              <p>We use your confirmation number to match your reservation with Hilton’s records. This helps us verify that the conference met its minimum room commitment.</p>
               {f.rooms.map((r, i) => (
                 <section key={r.id}>
                   <h3>Room {i + 1}</h3>
@@ -450,7 +461,7 @@ export default function Register() {
                   )}
                   <button
                     onClick={() =>
-                      edit(current => ({ ...current, rooms: current.rooms.filter((x) => x.id !== r.id) }))
+                      edit(current => ({ ...current, rooms: current.rooms.filter(x => x.id !== r.id) }), true)
                     }
                   >
                     Remove room
@@ -462,7 +473,7 @@ export default function Register() {
                   edit(current => ({
                     ...current,
                     rooms: [...current.rooms, { id: crypto.randomUUID() }],
-                  }))
+                  }), true)
                 }
               >
                 Add a reservation
@@ -509,23 +520,13 @@ export default function Register() {
                 </p>
               ))}
               {f.fields.tripCity && <p>{f.fields.tripCity} gospel trip · {f.fields.tripAdults || 0} adults · {f.fields.tripChildren || 0} children</p>}
-              {missing(payload).map(message=><p key={message}>{message}</p>)}
+
             </>
           )}
           <footer>
-            <button onClick={() => action(() => save(step))}>
-              Save and finish later
-            </button>
-            {step < 4 ? (
-              <button onClick={() => action(() => save(step + 1))}>
-                Save and continue
-              </button>
-            ) : (
-              <button onClick={() => action(() => save(step, true))}>
-                Complete registration
-              </button>
-            )}
-          </footer>
+            {step>0 && <button onClick={()=>action(()=>save(step-1))}>Back</button>}
+            {step<4 && <button onClick={()=>action(()=>save(step+1))}>{step===3?"Review":"Next"}</button>}
+
           <button
             onClick={() => action(async () => {
               if(dirty.current) await save(step);
@@ -538,6 +539,10 @@ export default function Register() {
           >
             Sign out
           </button>
+          <div className="registration-community">
+          {invite ? <a className="family-whatsapp" href={invite} target="_blank" rel="noopener noreferrer">Join the conference WhatsApp ↗</a> : inviteFailed ? <button type="button" onClick={()=>retryInvite(v=>v+1)}>Retry loading WhatsApp invitation</button> : <p>Loading WhatsApp invitation…</p>}
+          </div>
+          </footer>
         </fieldset>
       )}
 

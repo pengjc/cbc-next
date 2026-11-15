@@ -1,3 +1,5 @@
+import {marshall,unmarshall} from "@aws-sdk/util-dynamodb";
+import {form,applyChanges,paths} from "./record.mjs";
 import {parameter} from "./parameter.mjs";
 import {createVerifier,validateInvite} from "./verification.mjs";
 import {enroll} from "./enrollment.mjs";
@@ -91,7 +93,7 @@ export async function issue(email) {
       label,
       label,
       origin + "/register#" + new URLSearchParams({ email, token }).toString(),
-      "This link works once within seven days. If you request another link, use the newest email.",
+      "Use this link to open your registration as often as needed for seven days from the time it was sent. If you request another link, use the newest email.",
     );
   } catch (e) {
     await db.send(
@@ -133,7 +135,7 @@ export async function challenge(e) {
         new UpdateItemCommand({
           TableName,
           Key: key("EMAIL#" + e.request.userAttributes.email, "AUTH"),
-          UpdateExpression: "SET verified=:v REMOVE digest",
+          UpdateExpression: "SET verified=:v",
           ConditionExpression: "digest=:h AND expires>:n",
           ExpressionAttributeValues: {
             ":h": S(hash(e.request.challengeAnswer)),
@@ -234,56 +236,18 @@ export async function handler(e) {
     if(path.endsWith("/whatsapp")) return reply(200,{inviteUrl:validateInvite(await parameter(process.env.WHATSAPP_INVITE_PARAMETER))});
     const Key = key("FAMILY#" + claims.sub, "YEAR#2027"),
       old = await get(Key);
-    const previous = JSON.parse(old?.family?.S || "null"),
-      version = Number(old?.version?.N || 0);
-    if (method === "GET")
-      return reply(200, {
-        family: previous,
-        version,
-        status: old?.status?.S || "draft",
-        email: claims.email,
-      });
-    const f = b.family;
-    if (
-      !f ||
-      !Array.isArray(f.children) ||
-      !Array.isArray(f.rooms) ||
-      f.rooms.length > 30 ||
-      !Number.isInteger(b.version) ||
-      typeof b.complete !== "boolean"
-    )
-      return reply(400, {});
-    const flat = (o) =>
-      o &&
-      typeof o === "object" &&
-      !Array.isArray(o) &&
-      Object.values(o).every((v) => typeof v === "string" && v.length <= 4000);
-    const { children, rooms, ...household } = f;
-    if (
-      !flat(household) ||
-      !rooms.every((r) => flat(r) && r.id) ||
-      !children.every((c) => {
-        if (!c || typeof c !== "object") return false;
-        const { meetings, ...fields } = c;
-        return (
-          flat(fields) &&
-          c.id &&
-          Array.isArray(meetings) &&
-          meetings.every((v) => typeof v === "string")
-        );
-      })
-    )
-      return reply(400, {});
-    if (b.version !== version)
-      return reply(409, {
-        error: "This registration changed. Reload before editing.",
-      });
-    const errors = missing(f);
-    if (b.complete && errors.length) return reply(422, { errors });
-    const status =
-      !errors.length && (b.complete || old?.status?.S === "complete")
-        ? "complete"
-        : "draft";
+    const stored=old?unmarshall(old):null;
+    const version=stored?.version||0;
+    const previous=stored?form(stored):null;
+    if(method==="GET")return reply(200,{family:previous,version,status:stored?.status||"draft",email:claims.email});
+    if(method!=="PATCH")return reply(405,{});
+    if(b.version!==version)return reply(409,{error:"Registration changed. Reload before editing."});
+    let next;
+    try{next=applyChanges(stored,b.changes)}catch(error){return reply(400,{error:error.message})}
+    if (stored && paths(stored, next).length === 0)
+      return reply(200, { version, status: stored.status, receipt: true });
+    const f=form(next);
+    const status=missing(f).length?"draft":"complete";
     const numbers = (rooms) =>
       rooms.map((r) => roomKey(r.number || "")).filter(Boolean);
     const before = numbers(previous?.rooms || []),
@@ -292,29 +256,18 @@ export async function handler(e) {
       return reply(422, { errors: ["Each room number must be unique."] });
     const stamp = new Date().toISOString(),
       claim = (n) => key("HILTON#2027", "NUMBER#" + hash(n));
-    const tx = [
-      {
-        Put: {
-          TableName,
-          Item: {
-            ...Key,
-            family: S(JSON.stringify(f)),
-            email: S(claims.email),
-            version: N(version + 1),
-            status: S(status),
-            createdAt: old?.createdAt || S(stamp),
-            updatedAt: S(stamp),
-            hotelSource: S("reported_by_family"),
-          },
-          ConditionExpression: version
-            ? "version=:v"
-            : "attribute_not_exists(pk)",
-          ...(version
-            ? { ExpressionAttributeValues: { ":v": N(version) } }
-            : {}),
-        },
-      },
-    ];
+    const firstCompletion=status==="complete" && !stored?.firstCompletedAt;
+    Object.assign(next,{email:claims.email,status,version:version+1,createdAt:stored?.createdAt||stamp,updatedAt:stamp,hotelSource:"reported_by_family"});
+    if(firstCompletion)next.firstCompletedAt=stamp;
+    const names={},values={},sets=[],removes=[];
+    for(const [path,value] of paths(stored||{},next)){
+      const attr=path.map(k=>{const name="#k"+Object.keys(names).length;names[name]=k;return name}).join(".");
+      if(value===undefined)removes.push(attr);
+      else{const token=":v"+sets.length;values[token]=value;sets.push(attr+"="+token);}
+    }
+    if(version)values[":expected"]=version;
+    const tx=[{Update:{TableName,Key,UpdateExpression:"SET "+sets.join(",")+(removes.length?" REMOVE "+removes.join(","):""),
+      ExpressionAttributeNames:names,ExpressionAttributeValues:marshall(values),ConditionExpression:version?"version=:expected":"attribute_not_exists(pk)"}}];
     for (const n of after.filter((n) => !before.includes(n)))
       tx.push({
         Put: {
@@ -328,13 +281,14 @@ export async function handler(e) {
         Delete: {
           TableName,
           Key: claim(n),
-          ConditionExpression: "owner=:s",
+          ConditionExpression: "#owner=:s",
+          ExpressionAttributeNames: { "#owner": "owner" },
           ExpressionAttributeValues: { ":s": S(claims.sub) },
         },
       });
     await db.send(new TransactWriteItemsCommand({ TransactItems: tx }));
     let receipt = true;
-    if (status === "complete" && old?.status?.S !== "complete") {
+    if (firstCompletion) {
       try {
         await mail(
           claims.email,

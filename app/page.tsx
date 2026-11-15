@@ -37,7 +37,7 @@ export default function Home() {
 
         <section className="welcome wrap section-pad">
           <p className="eyebrow">A WEEKEND TOGETHER <span> / </span> 01</p>
-          <div className="welcome-grid"><h2>Blending the churches<br />in the <em>Carolinas.</em></h2><div><p className="lead">We look forward to a time of fellowship and blending with saints from across the Carolinas.</p><p>Join us in Myrtle Beach for meetings on Saturday and Lord’s Day, followed by gospel trips beginning Lord’s Day evening and gospel activities on Monday.</p><a className="text-link" href="#gospel-trips">Learn about the gospel trips <span aria-hidden="true">↗</span></a><RegistrationPrompt welcome /></div></div>
+          <div className="welcome-grid"><h2>Blending the churches<br />in the <em>Carolinas.</em></h2><div><p className="lead">We look forward to a time of fellowship and blending with saints from across the Carolinas.</p><p>Join us in Myrtle Beach for meetings on Saturday and Lord’s Day, followed by gospel trips beginning Lord’s Day evening and gospel activities on Monday.</p><a className="text-link" href="#gospel-trips">Learn about the gospel trips <span aria-hidden="true">↗</span></a></div></div>
         </section>
 
         <section id="schedule" className="schedule-section section-pad">
@@ -48,7 +48,6 @@ export default function Home() {
               <article><div className="date-num">17 <span>LORD’S DAY</span></div><div className="schedule-line" /><h3>Conference &amp; gospel trips</h3><p>Conference meeting at 10:00 AM at The Ellie. Gospel trip coordination at 7:30 PM in Wilmington and Charleston.</p></article>
               <article><div className="date-num">18 <span>MON</span></div><div className="schedule-line" /><h3>Gospel distributions</h3><p>Bibles for America or The Truth Sets Us Free distributions at the MLK Day parades in Wilmington and Charleston.</p></article>
             </div>
-            <RegistrationPrompt />
           </div>
         </section>
 
@@ -101,13 +100,12 @@ export default function Home() {
               </article>
             </div>
             <p className="trip-note">Distribution arrangements, meeting places, departure times, transportation, and participation details for both cities will be shared when available.</p>
-            <RegistrationPrompt light />
           </div>
         </section>
 
         <section className="archive-section section-pad"><div className="wrap archive-inner"><div><p className="eyebrow">FROM THE ARCHIVE <span> / </span> 05</p><h2>Conference archives</h2><p>Revisit the messages from the 2026 Carolinas Blending Conference in Charleston. Video and audio recordings are available.</p></div><div className="archive-links"><Link className="button button-dark" href="/archive/2026/messages">2026 conference recordings <span aria-hidden="true">↗</span></Link><Link className="text-link" href="/archive/2026">Explore the 2026 archive <span aria-hidden="true">↗</span></Link></div></div></section>
       </main>
-      <footer className="site-footer"><div className="wrap footer-inner"><div><Image src="/cbc-logo-white.svg" alt="Carolinas Blending Conference" width={86} height={45} /><p>Carolinas Blending Conference<br />Myrtle Beach, South Carolina · 2027</p></div><a href="#top">Back to top ↑</a></div></footer>
+      <footer className="site-footer"><div className="wrap footer-inner"><div><Image src="/cbc-logo-white.svg" alt="Carolinas Blending Conference" width={86} height={45} /><p>Carolinas Blending Conference<br />Myrtle Beach, South Carolina · 2027</p></div><RegistrationPrompt light /><a href="#top">Back to top ↑</a></div></footer>
       </RegistrationBar>
     </div>
   );

@@ -84,3 +84,6 @@
 .family-whatsapp{display:inline-block;background:#176647;color:white;border-radius:.35rem;padding:.75rem 1rem;margin:.75rem 0;font-weight:600}
 .family-page .registration-notice{position:sticky;top:.5rem;z-index:2;background:#e5f3ee;border-left:.35rem solid #176647;border-radius:.35rem;padding:1rem;margin:1rem 0;font-size:1.1rem;color:#123e33;font-weight:650}
 .family-page .trip-choice input[type=radio]{display:inline-block;width:auto;margin-right:.45rem}
+.registration-remaining { background: #fff7e4; border-left: .3rem solid #ab6816; padding: .8rem 1rem; margin: .75rem 0; color: #493413; }
+.registration-remaining ul { list-style: disc; padding-left: 1.3rem; margin: .4rem 0 0; }
+.registration-community { border-top: 1px solid #bdcec7; margin-top: 1rem; padding-top: .5rem; }

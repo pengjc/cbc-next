@@ -17,12 +17,13 @@ export function missing(family) {
   const counts = [family.adults, family.youth, family.kids];
   if (
     !counts.every(count) ||
-    !counts.some(Number) ||
-    Number(family.kids) < children.length
+    !counts.some(Number)
   )
     errors.push(
       "Check household headcounts, including children using childcare.",
     );
+  if (count(family.kids) && Number(family.kids) < children.length)
+    errors.push(`You listed ${family.kids} K–6 children and added ${children.length} childcare cards. Update the K–6 count under Attendees or remove an extra card under Children.`);
   if (children.length && !present(family.mobile))
     errors.push("Enter a guardian mobile number.");
   for (const [name, phone] of [
@@ -70,7 +71,7 @@ export function missing(family) {
         r.departure <= r.arrival,
     )
   )
-    errors.push("Complete each hotel reservation.");
+    errors.push("Under Hotel & trips, enter the booking name, Hilton confirmation number, check-in and checkout for each room. Checkout must follow check-in.");
   if (family.tripCity) {
     const adults = Number(family.tripAdults);
     const children = Number(family.tripChildren);

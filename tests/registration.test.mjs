@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import {DynamoDBClient} from "../infra/signup/function/node_modules/@aws-sdk/client-dynamodb/dist-cjs/index.js";
 import {SESv2Client} from "../infra/signup/function/node_modules/@aws-sdk/client-sesv2/dist-cjs/index.js";
 import {challenge,handler,issue} from "../infra/signup/function/registration.mjs";
-test("issued email tokens supersede old links and redeem once, even in a new session",async t=>{
+test("issued email tokens supersede old links and support repeat visits for seven days, even in a new session",async t=>{
  const auth={}, urls=[];
  let now=Date.now();
  t.mock.method(Date,"now",()=>now);
@@ -12,13 +12,14 @@ test("issued email tokens supersede old links and redeem once, even in a new ses
    if(c.constructor.name==="GetItemCommand")return {Item:auth};
    const values=c.input.ExpressionAttributeValues;
    if(values[":x"]){auth.digest=values[":h"];auth.expires=values[":x"];}
-   else if(values[":n"]){if(auth.digest?.S!==values[":h"].S||+auth.expires.N<=now/1000)throw Object.assign(Error(),{name:"ConditionalCheckFailedException"});delete auth.digest;auth.verified={BOOL:true};}
+   else if(values[":n"]){if(auth.digest?.S!==values[":h"].S||+auth.expires.N<=now/1000)throw Object.assign(Error(),{name:"ConditionalCheckFailedException"});assert.equal(c.input.UpdateExpression,"SET verified=:v");auth.verified={BOOL:true};}
  });
  const email="family@example.com";
  const verify=async url=>(await challenge({triggerSource:"VerifyAuthChallengeResponse_Authentication",request:{userAttributes:{email},challengeAnswer:new URLSearchParams(url.hash.slice(1)).get("token")},response:{}})).response.answerCorrect;
  await issue(email);now+=61000;await issue(email);
  assert.equal(Number(auth.expires.N)-Math.floor(now/1000),604800);
- now+=6*86400000;assert.equal(await verify(urls[0]),false);assert.equal(await verify(urls[1]),true);assert.equal(await verify(urls[1]),false);
+ now+=6*86400000;assert.equal(await verify(urls[0]),false);assert.equal(await verify(urls[1]),true);assert.equal(await verify(urls[1]),true);
+ now+=86400000;assert.equal(await verify(urls[1]),false);
  now+=61000;await issue(email);assert.equal(Number(auth.expires.N)-Math.floor(now/1000),604800);now+=7*86400000;assert.equal(await verify(urls[2]),false);
 });
 test("registration API requires a verified Cognito identity",async()=>{

@@ -28,7 +28,7 @@ export function RegistrationBar({children}:{children:ReactNode}) {
       }
       setNearPrompt(visiblePrompts.size > 0);
     });
-    document.querySelectorAll(".updates-prompt").forEach(element => prompts.observe(element));
+    document.querySelectorAll(".conference-site main .button, .site-footer .button").forEach(element => prompts.observe(element));
     const viewport = window.visualViewport;
     const resize = () => setKeyboard(Boolean(viewport && window.innerWidth < 800 && window.innerHeight - viewport.height > 150));
     viewport?.addEventListener("resize", resize);

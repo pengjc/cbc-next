@@ -141,7 +141,7 @@ Resources:
           Properties: {ApiId: !Ref SignupApi, Path: /registration/2027/me, Method: GET, Auth: {Authorizer: FamilyAuth}}
         Save:
           Type: HttpApi
-          Properties: {ApiId: !Ref SignupApi, Path: /registration/2027/me, Method: PUT, Auth: {Authorizer: FamilyAuth}}
+          Properties: {ApiId: !Ref SignupApi, Path: /registration/2027/me, Method: PATCH, Auth: {Authorizer: FamilyAuth}}
   SignupApi:
     Type: AWS::Serverless::HttpApi
     Properties:
@@ -155,9 +155,16 @@ Resources:
       StageName: '$default'
       CorsConfiguration:
         AllowOrigins: !Ref AllowedOrigins
-        AllowMethods: [GET, PUT, POST, OPTIONS]
+        AllowMethods: [GET, PATCH, POST, OPTIONS]
         AllowHeaders: [Content-Type, Authorization]
         MaxAge: 600
+      RouteSettings:
+        'PATCH /registration/2027/me':
+          ThrottlingBurstLimit: 50
+          ThrottlingRateLimit: 25
+        'GET /registration/2027/me':
+          ThrottlingBurstLimit: 25
+          ThrottlingRateLimit: 10
       DefaultRouteSettings:
         ThrottlingBurstLimit: 5
         ThrottlingRateLimit: 2
